@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cosmic Leap: Starbound Odyssey — Game Bible</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+
+  :root {
+    --void: #04040a;
+    --deep: #0a0818;
+    --panel: #0f0c1e;
+    --card: #160f2c;
+    --border: #2a1f4a;
+    --muted: #4a3a72;
+    --ghost: #8877aa;
+    --text: #e8e0ff;
+    --bright: #ffffff;
+    --nova: #ff6b35;
+    --luna: #7c3aed;
+    --sol: #f59e0b;
+    --orbit: #06b6d4;
+    --shard: #a78bfa;
+    --danger: #ef4444;
+    --safe: #10b981;
+    --glow-nova: rgba(255,107,53,0.15);
+    --glow-luna: rgba(124,58,237,0.15);
+    --glow-sol: rgba(245,158,11,0.15);
+    --glow-orbit: rgba(6,182,212,0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--void);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Starfield */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 60% 15%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 80% 60%, rgba(167,139,250,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 40% 75%, rgba(255,255,255,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 90% 40%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 10% 80%, rgba(167,139,250,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 50% 50%, rgba(255,255,255,0.15) 0%, transparent 100%),
+      radial-gradient(1px 1px at 70% 85%, rgba(255,255,255,0.25) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px 60px;
+  }
+
+  /* Header */
+  .header {
+    padding: 48px 0 32px;
+    text-align: center;
+  }
+
+  .header-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--shard);
+    margin-bottom: 16px;
+  }
+
+  .header h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 700;
+    color: var(--bright);
+    line-height: 1.1;
+    letter-spacing: -1px;
+  }
+
+  .header h1 span {
+    background: linear-gradient(135deg, var(--nova) 0%, var(--shard) 50%, var(--orbit) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .header-sub {
+    margin-top: 12px;
+    color: var(--ghost);
+    font-size: 14px;
+    font-weight: 400;
+  }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 4px;
+    margin-bottom: 32px;
+  }
+
+  .tab-btn {
+    flex: 1;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 9px;
+    background: transparent;
+    color: var(--ghost);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .tab-btn:hover { color: var(--text); }
+
+  .tab-btn.active {
+    background: linear-gradient(135deg, var(--luna), #4c1d95);
+    color: var(--bright);
+    box-shadow: 0 0 20px rgba(124,58,237,0.3);
+  }
+
+  .tab-icon { font-size: 16px; }
+
+  /* Tab content */
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* Section label */
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .section-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--bright);
+    margin-bottom: 24px;
+  }
+
+  /* ===================== LEVEL DESIGN ===================== */
+
+  .galaxy-grid {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+
+  .galaxy-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 0;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+
+  .galaxy-card:hover {
+    border-color: var(--muted);
+    transform: translateY(-1px);
+  }
+
+  .galaxy-card.expanded { border-color: var(--luna); }
+
+  .galaxy-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 20px;
+  }
+
+  .galaxy-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    min-width: 24px;
+  }
+
+  .galaxy-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+
+  .galaxy-info { flex: 1; }
+
+  .galaxy-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--bright);
+    margin-bottom: 3px;
+  }
+
+  .galaxy-tagline {
+    font-size: 12px;
+    color: var(--ghost);
+  }
+
+  .galaxy-meta {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .diff-badge {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .diff-1 { background: rgba(16,185,129,0.15); color: #10b981; }
+  .diff-2 { background: rgba(245,158,11,0.15); color: #f59e0b; }
+  .diff-3 { background: rgba(239,68,68,0.15); color: #ef4444; }
+
+  .chevron {
+    color: var(--muted);
+    transition: transform 0.2s;
+    font-size: 12px;
+  }
+
+  .galaxy-card.expanded .chevron { transform: rotate(180deg); }
+
+  .galaxy-body {
+    display: none;
+    padding: 0 20px 20px;
+    border-top: 1px solid var(--border);
+    margin-top: 0;
+  }
+
+  .galaxy-card.expanded .galaxy-body { display: block; }
+
+  .galaxy-body-inner {
+    padding-top: 18px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  @media (max-width: 600px) {
+    .galaxy-body-inner { grid-template-columns: 1fr; }
+  }
+
+  .detail-block { }
+
+  .detail-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .detail-text {
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  .mechanic-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .mechanic-list li {
+    font-size: 12px;
+    color: var(--ghost);
+    padding-left: 14px;
+    position: relative;
+    line-height: 1.5;
+  }
+
+  .mechanic-list li::before {
+    content: '◆';
+    position: absolute;
+    left: 0;
+    font-size: 6px;
+    top: 5px;
+    color: var(--shard);
+  }
+
+  .boss-block {
+    grid-column: 1 / -1;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .boss-icon { font-size: 28px; }
+
+  .boss-info { flex: 1; }
+
+  .boss-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--bright);
+    margin-bottom: 4px;
+  }
+
+  .boss-desc {
+    font-size: 12px;
+    color: var(--ghost);
+    line-height: 1.5;
+  }
+
+  .boss-weakness {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--nova);
+    margin-top: 6px;
+  }
+
+  .shard-reward {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--shard);
+    background: rgba(167,139,250,0.1);
+    padding: 3px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  .progression-bar {
+    height: 4px;
+    background: var(--card);
+    border-radius: 2px;
+    margin-top: 24px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .progression-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--luna), var(--orbit));
+    transition: width 0.6s ease;
+  }
+
+  .progression-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--ghost);
+    margin-top: 8px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* ===================== TECH ARCH ===================== */
+
+  .arch-section {
+    margin-bottom: 32px;
+  }
+
+  .arch-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--bright);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .arch-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* Stack layers diagram */
+  .stack-diagram {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin-bottom: 32px;
+  }
+
+  .stack-layer {
+    display: flex;
+    align-items: stretch;
+    gap: 3px;
+    min-height: 56px;
+  }
+
+  .layer-label {
+    width: 80px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 12px;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: right;
+  }
+
+  .layer-blocks {
+    flex: 1;
+    display: flex;
+    gap: 3px;
+  }
+
+  .layer-block {
+    flex: 1;
+    border-radius: 8px;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+    cursor: default;
+    position: relative;
+  }
+
+  .layer-block:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  }
+
+  .lb-client { background: rgba(255,107,53,0.08); border-color: rgba(255,107,53,0.2); }
+  .lb-engine { background: rgba(124,58,237,0.08); border-color: rgba(124,58,237,0.2); }
+  .lb-network { background: rgba(6,182,212,0.08); border-color: rgba(6,182,212,0.2); }
+  .lb-backend { background: rgba(16,185,129,0.08); border-color: rgba(16,185,129,0.2); }
+  .lb-data { background: rgba(245,158,11,0.08); border-color: rgba(245,158,11,0.2); }
+  .lb-security { background: rgba(239,68,68,0.08); border-color: rgba(239,68,68,0.2); }
+
+  .lb-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--bright);
+  }
+
+  .lb-tech {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: var(--ghost);
+  }
+
+  .lb-icon {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    font-size: 16px;
+    opacity: 0.5;
+  }
+
+  /* Arrow connector */
+  .stack-arrow {
+    display: flex;
+    align-items: center;
+    padding-left: 80px;
+    gap: 3px;
+  }
+
+  .arrow-line {
+    width: 2px;
+    height: 14px;
+    background: var(--border);
+    margin-left: 20px;
+  }
+
+  .arrow-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: var(--muted);
+    margin-left: 6px;
+    letter-spacing: 1px;
+  }
+
+  /* Flow cards */
+  .flow-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .flow-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+  }
+
+  .flow-card-icon { font-size: 24px; margin-bottom: 12px; }
+
+  .flow-card-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--bright);
+    margin-bottom: 8px;
+  }
+
+  .flow-steps {
+    list-style: none;
+    counter-reset: step;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .flow-steps li {
+    counter-increment: step;
+    font-size: 11px;
+    color: var(--ghost);
+    line-height: 1.4;
+    padding-left: 20px;
+    position: relative;
+  }
+
+  .flow-steps li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: var(--shard);
+    width: 14px;
+    height: 14px;
+    background: rgba(167,139,250,0.1);
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 14px;
+    text-align: center;
+  }
+
+  /* Spec table */
+  .spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    margin-bottom: 24px;
+  }
+
+  .spec-table th {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .spec-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(42,31,74,0.5);
+    color: var(--text);
+    vertical-align: top;
+  }
+
+  .spec-table tr:last-child td { border-bottom: none; }
+
+  .spec-table td:first-child {
+    color: var(--ghost);
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    white-space: nowrap;
+    width: 140px;
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    margin: 1px;
+  }
+
+  .tag-green { background: rgba(16,185,129,0.15); color: #10b981; }
+  .tag-purple { background: rgba(124,58,237,0.15); color: #a78bfa; }
+  .tag-blue { background: rgba(6,182,212,0.15); color: #06b6d4; }
+  .tag-orange { background: rgba(255,107,53,0.15); color: #ff6b35; }
+  .tag-red { background: rgba(239,68,68,0.15); color: #ef4444; }
+  .tag-yellow { background: rgba(245,158,11,0.15); color: #f59e0b; }
+
+  /* Divider */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 32px 0;
+  }
+
+  /* Highlight box */
+  .highlight-box {
+    background: rgba(124,58,237,0.06);
+    border: 1px solid rgba(124,58,237,0.2);
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-bottom: 20px;
+  }
+
+  .highlight-box-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--shard);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .highlight-box p {
+    font-size: 12px;
+    color: var(--ghost);
+    line-height: 1.6;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--void); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="header-eyebrow">Game Bible — v1.0</div>
+    <h1>Cosmic Leap:<br><span>Starbound Odyssey</span></h1>
+    <div class="header-sub">Level Design Document &nbsp;·&nbsp; Technical Architecture</div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('levels')">
+      <span class="tab-icon">🌌</span> Level Design
+    </button>
+    <button class="tab-btn" onclick="switchTab('tech')">
+      <span class="tab-icon">⚙️</span> Tech Architecture
+    </button>
+  </div>
+
+  <!-- ====== LEVEL DESIGN TAB ====== -->
+  <div class="tab-content active" id="tab-levels">
+
+    <div class="section-label">Level Design Document</div>
+    <div class="section-title">The 7 Aether Galaxies</div>
+
+    <div class="highlight-box">
+      <div class="highlight-box-title">🧭 Design Philosophy</div>
+      <p>Each galaxy introduces one core gravity mechanic that builds on the last. Difficulty scales by forcing players to combine mechanics from previous worlds. World 7 — The Core — reuses all prior mechanics simultaneously. Solo and co-op modes share the same geometry but unlock branching paths that require two players to access.</p>
+    </div>
+
+    <div class="galaxy-grid" id="galaxy-grid"></div>
+
+    <div class="progression-bar">
+      <div class="progression-fill" id="prog-fill" style="width: 0%"></div>
+    </div>
+    <div class="progression-label">
+      <span>GALAXY 1 — INTRO</span>
+      <span id="prog-label">No galaxy selected</span>
+      <span>GALAXY 7 — FINAL</span>
+    </div>
+
+  </div>
+
+  <!-- ====== TECH ARCH TAB ====== -->
+  <div class="tab-content" id="tab-tech">
+
+    <div class="section-label">Technical Architecture</div>
+    <div class="section-title">Full Stack Breakdown</div>
+
+    <div class="highlight-box">
+      <div class="highlight-box-title">🏗️ Architecture Principle</div>
+      <p>Server-authoritative design throughout. The client renders only — all game state, token transactions, match results, and anti-cheat validation happen server-side. No client value is trusted without server confirmation. This prevents token cheating, speedhacking, and result manipulation.</p>
+    </div>
+
+    <!-- Stack Diagram -->
+    <div class="arch-section">
+      <div class="arch-title">System Stack — Layer by Layer</div>
+      <div class="stack-diagram" id="stack-diagram"></div>
+    </div>
+
+    <!-- Data Flows -->
+    <div class="arch-section">
+      <div class="arch-title">Critical Data Flows</div>
+      <div class="flow-grid" id="flow-grid"></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Tech Specs -->
+    <div class="arch-section">
+      <div class="arch-title">Technology Decisions</div>
+      <table class="spec-table" id="spec-table">
+        <thead>
+          <tr>
+            <th>Component</th>
+            <th>Choice</th>
+            <th>Why</th>
+          </tr>
+        </thead>
+        <tbody id="spec-tbody"></tbody>
+      </table>
+    </div>
+
+    <!-- Multiplayer Detail -->
+    <div class="arch-section">
+      <div class="arch-title">Multiplayer Netcode — Rollback Architecture</div>
+      <div class="flow-grid" id="netcode-grid"></div>
+    </div>
+
+    <div class="highlight-box">
+      <div class="highlight-box-title">🔐 Anti-Cheat Strategy</div>
+      <p>Three-layer protection: (1) <strong style="color:var(--text)">Client-side</strong> — Easy Anti-Cheat scans for memory injection and DLL hijacking. (2) <strong style="color:var(--text)">Network-layer</strong> — Server rejects any physics state that violates velocity caps or teleportation thresholds. (3) <strong style="color:var(--text)">Economy-layer</strong> — All shard mutations are signed server transactions logged to an append-only ledger; any unsigned client shard claim is silently discarded.</p>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  // ====== DATA ======
+  const galaxies = [
+    {
+      num: '01',
+      icon: '💎',
+      iconBg: 'rgba(6,182,212,0.15)',
+      name: 'Crystal Crust',
+      tagline: 'Floating gemstone caverns — low gravity introduction',
+      diff: 1, diffLabel: 'INTRO',
+      theme: 'Low-gravity caverns carved through giant crystalline asteroids. Light refracts off gem walls, creating shifting spotlight mechanics.',
+      mechanic: 'Reduced gravity (0.4G). Players float high and must time landings carefully. Introduces the Star Dash ability.',
+      mechanics: [
+        'Gem-wall reflection — light beams open doors',
+        'Slow fall: hold jump to glide short distances',
+        'Breakable crystal floors over void pits',
+        'Collect 5 Crystal Shards to unlock the boss arena',
+      ],
+      coopNote: 'Co-op path: Player 2 holds a mirror platform steady while Player 1 rides across a chasm.',
+      boss: { icon: '🦂', name: 'Prism Warden', desc: 'A scorpion-like creature encased in reflective crystal armour. Attack pattern: fires light beams that bounce off walls. Players must reflect beams back using collected gem shards.', weakness: 'WEAKNESS → Reflect 3 beams simultaneously (requires co-op in 2P mode)' },
+      shards: '+60 first clear · +15 repeat',
+    },
+    {
+      num: '02',
+      icon: '🌸',
+      iconBg: 'rgba(16,185,129,0.15)',
+      name: 'Nebula Gardens',
+      tagline: 'Pollen-filled zero-G meadows',
+      diff: 1, diffLabel: 'EASY',
+      theme: 'Zero-gravity biome filled with giant luminescent flora. Pollen clouds obscure vision temporarily. Players traverse by leaping between drifting plant platforms.',
+      mechanic: 'Zero-G drift. Players bounce between floating root clusters. Luna\'s Gravity Flip is introduced as a pickup here before being unlocked permanently.',
+      mechanics: [
+        'Pollen fog — 4-second vision reduction zones',
+        'Root trampolines: bouncy launch pads at fixed angles',
+        'Seed pods: throwable to create temporary platforms',
+        'Wind currents: directional force fields pushing the player',
+      ],
+      coopNote: 'Co-op path: One player fans pollen away (hold position) while the other navigates a blind corridor.',
+      boss: { icon: '🌿', name: 'Thornveil the Ancient', desc: 'A massive sentient plant whose vines extend across the entire arena. Vines retract only when players land on specific glowing root nodes in sequence — musical memory game pattern.', weakness: 'WEAKNESS → Step nodes in correct sequence; randomises each attempt' },
+      shards: '+75 first clear · +20 repeat',
+    },
+    {
+      num: '03',
+      icon: '⚙️',
+      iconBg: 'rgba(255,107,53,0.15)',
+      name: 'Iron Halo',
+      tagline: 'Industrial wreckage rings — magnetic gravity',
+      diff: 2, diffLabel: 'MEDIUM',
+      theme: 'Broken orbital station debris spinning in rings around a dead planet. Gravity direction changes based on which metal surface the player is closest to.',
+      mechanic: 'Magnetic surface gravity — players stick to any metallic surface, enabling wall-walking and ceiling traversal. Introduces momentum-based movement.',
+      mechanics: [
+        'Surface gravity snap: run on walls and ceilings seamlessly',
+        'Magnetic repulsion zones: red rings launch players off surface',
+        'Rotating debris platforms: timing-based traversal',
+        'Magnetic bombs: attract or repel nearby objects',
+      ],
+      coopNote: 'Co-op path: Player 1 holds a rotating gear segment still while Player 2 crosses it.',
+      boss: { icon: '🤖', name: 'Constructor ΣGMA', desc: 'A massive assembler robot that builds new arena hazards mid-fight from surrounding debris. Players must use magnetic bombs to dismantle its armor pieces before the core is exposed.', weakness: 'WEAKNESS → Destroy 4 limbs; limbs regenerate if not all destroyed within 30s' },
+      shards: '+90 first clear · +25 repeat',
+    },
+    {
+      num: '04',
+      icon: '🔊',
+      iconBg: 'rgba(245,158,11,0.15)',
+      name: 'Echo Void',
+      tagline: 'Sound-based puzzle dimensions',
+      diff: 2, diffLabel: 'MEDIUM',
+      theme: 'A dimension where visibility is zero — players navigate entirely by sound pulses emitted when they move. Platforms only become visible when struck by sound waves.',
+      mechanic: 'Echolocation-based navigation. Jumping creates a pulse that briefly illuminates nearby platforms. Loud enemies track the player by sound.',
+      mechanics: [
+        'Sound pulse radius: larger jumps = larger reveal circle',
+        'Silent zones: no pulses allowed — must memorise layout',
+        'Echo enemies: hone in on any sound within 5 seconds',
+        'Resonance bridges: stand still long enough to materialise',
+      ],
+      coopNote: 'Co-op path: One player draws enemy attention while the other navigates the silent corridor to the exit switch.',
+      boss: { icon: '👁️', name: 'The Hollow Ear', desc: 'An invisible floating eye-creature that localises players by sound and fires shockwaves. Must be lured into silent resonance traps — materialises briefly when hit, allowing attacks.', weakness: 'WEAKNESS → Lure into 3 resonance traps without making a jump sound within 2m' },
+      shards: '+110 first clear · +30 repeat',
+    },
+    {
+      num: '05',
+      icon: '🌋',
+      iconBg: 'rgba(239,68,68,0.15)',
+      name: 'Ember Drift',
+      tagline: 'Volcanic asteroid fields — thermal gravity',
+      diff: 3, diffLabel: 'HARD',
+      theme: 'Active volcanic asteroids locked in collision orbit. Heat thermals create updrafts and downdrafts. Lava flows reset gravity direction unpredictably.',
+      mechanic: 'Thermal convection gravity — rising hot air creates local upward gravity zones. Players must read thermal currents to navigate safely.',
+      mechanics: [
+        'Thermal columns: upward gravity for 3 seconds before dispersing',
+        'Lava tide: periodic floor-fill event requiring vertical escape',
+        'Cooling vents: freeze mid-air for 2s to reposition',
+        'Combines Crystal Crust low-G with Iron Halo wall-walk',
+      ],
+      coopNote: 'Co-op path: Player 1 activates cooling vents to freeze platforms while Player 2 sprints across hot sections.',
+      boss: { icon: '🐲', name: 'Magmavore Rex', desc: 'A lava-encased dragon that splits the arena into volatile segments with each fire breath. Thermal updrafts from its wings must be ridden to reach attack windows on its back.', weakness: 'WEAKNESS → Hit dorsal fin 3× using thermal ride; each hit resets thermal pattern' },
+      shards: '+130 first clear · +35 repeat',
+    },
+    {
+      num: '06',
+      icon: '❄️',
+      iconBg: 'rgba(6,182,212,0.1)',
+      name: 'Frost Orbit',
+      tagline: 'Frozen comet trails — ice physics',
+      diff: 3, diffLabel: 'HARD',
+      theme: 'Comet trail frozen in time — a long chain of ice asteroids with near-zero friction. All previous mechanics apply but movement control is drastically reduced.',
+      mechanic: 'Frictionless ice surfaces combined with gravitational slingshot nodes. Players build speed and must use terrain geometry to redirect momentum.',
+      mechanics: [
+        'Ice momentum: no deceleration without a jump cancel',
+        'Slingshot nodes: orbital momentum points for rapid traversal',
+        'Combines ALL prior mechanics in specific puzzle rooms',
+        'Blizzard events: forced movement direction for 8s intervals',
+      ],
+      coopNote: 'Co-op path: Players must maintain contact momentum — if one stops, the other gets pulled back. Requires synchronised movement.',
+      boss: { icon: '🌀', name: 'Glacius the Eternal', desc: 'A colossal ice elemental that freezes sections of the arena after each hit, permanently removing them. Arena shrinks with each phase. Final phase is a single pillar requiring perfect momentum management.', weakness: 'WEAKNESS → Hit core while sliding (not standing); requires ice momentum builds' },
+      shards: '+150 first clear · +40 repeat',
+    },
+    {
+      num: '07',
+      icon: '⭐',
+      iconBg: 'rgba(167,139,250,0.15)',
+      name: 'The Core',
+      tagline: 'Final singularity — all mechanics converge',
+      diff: 3, diffLabel: 'FINAL',
+      theme: 'The neutron star\'s collapsing core. Gravity warps radially — the star is both floor and ceiling simultaneously. All 6 prior galaxy mechanics appear in rotating 90-second segments.',
+      mechanic: 'Rotating gravity axis — gravity direction shifts 90° every 90 seconds, announced 10 seconds early by visual and audio cue. Players must constantly reorient.',
+      mechanics: [
+        'Rotating gravity: 6 phases, one per galaxy mechanic',
+        'Phase 1: Crystal low-G · Phase 2: Nebula zero-G',
+        'Phase 3: Iron Halo wall-walk · Phase 4: Echo Void dark',
+        'Phase 5: Ember thermal · Phase 6: Frost ice — then loops',
+      ],
+      coopNote: 'Co-op exclusive secret ending: both players must reach the inner core simultaneously by splitting to opposite sides during the final gravity rotation.',
+      boss: { icon: '🌑', name: 'The Null Sovereign', desc: 'The collapsed consciousness of the neutron star. Manifests as a void sphere that mirrors the player\'s last 5 seconds of movement back at them as a hazard clone. During gravity rotations, Null Sovereign also rotates its attack patterns.', weakness: 'WEAKNESS → Bait the clone into a surface it cannot follow you onto after each gravity shift' },
+      shards: '+300 first clear · +80 repeat · 🏆 Sovereign Crown cosmetic',
+    },
+  ];
+
+  const stackLayers = [
+    {
+      label: 'CLIENT',
+      blocks: [
+        { name: 'Windows / macOS / Linux', tech: 'Unity 6 · C#', cls: 'lb-client', icon: '🖥️' },
+        { name: 'iOS / Android', tech: 'Unity Mobile · IL2CPP', cls: 'lb-client', icon: '📱' },
+      ],
+      arrow: 'HTTPS · WebSocket · UDP'
+    },
+    {
+      label: 'ENGINE',
+      blocks: [
+        { name: 'Rendering + Physics', tech: 'Unity 6 HDRP · PhysX', cls: 'lb-engine', icon: '🎮' },
+        { name: 'Input + Audio', tech: 'Unity Input System · FMOD', cls: 'lb-engine', icon: '🎵' },
+        { name: 'UI Framework', tech: 'Unity UI Toolkit', cls: 'lb-engine', icon: '🖼️' },
+      ],
+      arrow: 'Photon SDK'
+    },
+    {
+      label: 'NETWORK',
+      blocks: [
+        { name: 'Multiplayer Relay', tech: 'Photon Fusion 2 · Rollback', cls: 'lb-network', icon: '🔄' },
+        { name: 'Matchmaking', tech: 'PlayFab Matchmaking', cls: 'lb-network', icon: '🔍' },
+        { name: 'Voice Chat', tech: 'Photon Voice 2 · Opus codec', cls: 'lb-network', icon: '🎙️' },
+      ],
+      arrow: 'REST API · JWT Auth'
+    },
+    {
+      label: 'BACKEND',
+      blocks: [
+        { name: 'Game Server', tech: 'Node.js · Azure GameLift', cls: 'lb-backend', icon: '⚙️' },
+        { name: 'Auth Service', tech: 'Firebase Auth · JWT', cls: 'lb-backend', icon: '🔑' },
+        { name: 'Payment Service', tech: 'Stripe · Apple/Google IAP', cls: 'lb-backend', icon: '💳' },
+        { name: 'Token Ledger', tech: 'Append-only · Signed Tx', cls: 'lb-backend', icon: '📒' },
+      ],
+      arrow: 'SQL · NoSQL'
+    },
+    {
+      label: 'DATA',
+      blocks: [
+        { name: 'Player Database', tech: 'Firebase Firestore', cls: 'lb-data', icon: '🗄️' },
+        { name: 'Match History', tech: 'PostgreSQL · TimescaleDB', cls: 'lb-data', icon: '📊' },
+        { name: 'Asset Storage', tech: 'Azure Blob / CDN', cls: 'lb-data', icon: '☁️' },
+      ],
+      arrow: 'EAC · Server Validation'
+    },
+    {
+      label: 'SECURITY',
+      blocks: [
+        { name: 'Client Anti-Cheat', tech: 'Easy Anti-Cheat (EAC)', cls: 'lb-security', icon: '🛡️' },
+        { name: 'Server Validation', tech: 'Physics state checks', cls: 'lb-security', icon: '✅' },
+        { name: 'Economy Guard', tech: 'Signed tx ledger', cls: 'lb-security', icon: '🔒' },
+      ],
+      arrow: null
+    },
+  ];
+
+  const flows = [
+    {
+      icon: '🔐',
+      title: 'Player Auth Flow',
+      steps: [
+        'Client sends Firebase Auth token',
+        'Backend validates token signature',
+        'Session JWT issued (15min expiry)',
+        'JWT attached to all API requests',
+        'Refresh token stored client-side only',
+      ]
+    },
+    {
+      icon: '💎',
+      title: 'Star Shard Transaction',
+      steps: [
+        'Game event fires (level clear, kill)',
+        'Server calculates reward server-side',
+        'Signed transaction written to ledger',
+        'Client balance updated via push event',
+        'Any unsigned client claim discarded',
+      ]
+    },
+    {
+      icon: '🎮',
+      title: 'Multiplayer Session',
+      steps: [
+        'Host requests room from Photon Fusion',
+        'PlayFab assigns region-optimal server',
+        'All players connect to relay room',
+        'Server ticks at 60Hz authoritative state',
+        'Client predicts locally, corrects on mismatch',
+      ]
+    },
+    {
+      icon: '💳',
+      title: 'Shard Pack Purchase',
+      steps: [
+        'Player selects pack in-game store',
+        'Stripe checkout session created server-side',
+        'Player completes payment (Stripe/IAP)',
+        'Webhook confirms payment to backend',
+        'Shards credited via signed ledger tx',
+      ]
+    },
+  ];
+
+  const netcodeCards = [
+    {
+      icon: '🔄',
+      title: 'Rollback Netcode',
+      steps: [
+        'Each client simulates physics locally',
+        'Server broadcasts authoritative tick',
+        'Client compares predicted vs server state',
+        'Mismatch triggers local rollback + resim',
+        'Smoothed interpolation hides correction',
+      ]
+    },
+    {
+      icon: '📡',
+      title: 'Lag Compensation',
+      steps: [
+        'Server timestamps every input packet',
+        'Player position rewound to input timestamp',
+        'Hit detection run on rewound state',
+        'Result broadcast to all players',
+        'Visual effect played at current position',
+      ]
+    },
+    {
+      icon: '🌐',
+      title: 'Region Routing',
+      steps: [
+        'Client pings 6 Photon regions on launch',
+        'Lowest-latency region selected automatically',
+        'Room created in that region',
+        'Late joiners routed to same region room',
+        'Cross-region fallback if room full (<150ms)',
+      ]
+    },
+  ];
+
+  const specs = [
+    { comp: 'Game Engine', choice: 'Unity 6 (HDRP)', why: 'Best 3D gravity platformer tooling; Cinemachine for orbital cameras; large asset ecosystem', tags: ['tag-purple'] },
+    { comp: 'Multiplayer', choice: 'Photon Fusion 2', why: 'Rollback netcode built-in; server-authoritative mode; dedicated relay infrastructure globally', tags: ['tag-blue'] },
+    { comp: 'Auth', choice: 'Firebase Auth + JWT', why: 'Free tier covers millions of users; supports Google/Apple SSO; tokens are industry standard', tags: ['tag-green'] },
+    { comp: 'Backend', choice: 'Node.js + Azure', why: 'Azure GameLift for dedicated game servers; scales automatically with player count', tags: ['tag-blue'] },
+    { comp: 'Database', choice: 'Firestore + PostgreSQL', why: 'Firestore for real-time player data; PostgreSQL + TimescaleDB for match history analytics', tags: ['tag-yellow'] },
+    { comp: 'Payments', choice: 'Stripe + Apple/Google IAP', why: 'Stripe for desktop; platform-mandated IAP for mobile; webhooks trigger server-side shard credit', tags: ['tag-green'] },
+    { comp: 'Anti-Cheat', choice: 'Easy Anti-Cheat (EAC)', why: 'Free for indie developers; Epic-maintained; protects against injection, memory editing, DLL hijack', tags: ['tag-red'] },
+    { comp: 'Voice Chat', choice: 'Photon Voice 2', why: 'Bundled with Photon subscription; Opus codec; 3D positional audio supported out of the box', tags: ['tag-blue'] },
+    { comp: 'Asset CDN', choice: 'Azure Blob + CDN', why: 'Distribute game assets and patches globally; incremental patch downloads reduce update sizes', tags: ['tag-blue'] },
+    { comp: 'CI/CD', choice: 'GitHub Actions + Unity Cloud', why: 'Automated builds for all platforms; Unity Cloud Build handles mobile signing certificates', tags: ['tag-purple'] },
+  ];
+
+  // ====== RENDER LEVEL DESIGN ======
+  function renderGalaxies() {
+    const grid = document.getElementById('galaxy-grid');
+    galaxies.forEach((g, i) => {
+      const card = document.createElement('div');
+      card.className = 'galaxy-card';
+      card.id = `galaxy-${i}`;
+      card.innerHTML = `
+        <div class="galaxy-header" onclick="toggleGalaxy(${i})">
+          <div class="galaxy-num">${g.num}</div>
+          <div class="galaxy-icon" style="background:${g.iconBg}">${g.icon}</div>
+          <div class="galaxy-info">
+            <div class="galaxy-name">${g.name}</div>
+            <div class="galaxy-tagline">${g.tagline}</div>
+          </div>
+          <div class="galaxy-meta">
+            <span class="diff-badge diff-${g.diff}">${g.diffLabel}</span>
+            <span class="shard-reward">${g.shards.split('·')[0].trim()}</span>
+          </div>
+          <div class="chevron">▼</div>
+        </div>
+        <div class="galaxy-body">
+          <div class="galaxy-body-inner">
+            <div class="detail-block">
+              <div class="detail-label">World Theme</div>
+              <div class="detail-text">${g.theme}</div>
+            </div>
+            <div class="detail-block">
+              <div class="detail-label">Core Mechanic</div>
+              <div class="detail-text">${g.mechanic}</div>
+            </div>
+            <div class="detail-block">
+              <div class="detail-label">Level Gimmicks</div>
+              <ul class="mechanic-list">
+                ${g.mechanics.map(m => `<li>${m}</li>`).join('')}
+              </ul>
+            </div>
+            <div class="detail-block">
+              <div class="detail-label">Co-op Exclusive Path</div>
+              <div class="detail-text">${g.coopNote}</div>
+            </div>
+            <div class="boss-block">
+              <div class="boss-icon">${g.boss.icon}</div>
+              <div class="boss-info">
+                <div class="boss-name">⚔️ Boss: ${g.boss.name}</div>
+                <div class="boss-desc">${g.boss.desc}</div>
+                <div class="boss-weakness">${g.boss.weakness}</div>
+              </div>
+              <div>
+                <div class="shard-reward">💎 ${g.shards}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  function toggleGalaxy(i) {
+    const card = document.getElementById(`galaxy-${i}`);
+    const wasExpanded = card.classList.contains('expanded');
+    document.querySelectorAll('.galaxy-card').forEach(c => c.classList.remove('expanded'));
+    if (!wasExpanded) {
+      card.classList.add('expanded');
+      const pct = ((i + 1) / galaxies.length) * 100;
+      document.getElementById('prog-fill').style.width = pct + '%';
+      document.getElementById('prog-label').textContent = `Galaxy ${i+1} of 7 selected`;
+    } else {
+      document.getElementById('prog-fill').style.width = '0%';
+      document.getElementById('prog-label').textContent = 'No galaxy selected';
+    }
+  }
+
+  // ====== RENDER TECH ARCH ======
+  function renderStack() {
+    const diag = document.getElementById('stack-diagram');
+    stackLayers.forEach(layer => {
+      const row = document.createElement('div');
+      row.className = 'stack-layer';
+      row.innerHTML = `
+        <div class="layer-label">${layer.label}</div>
+        <div class="layer-blocks">
+          ${layer.blocks.map(b => `
+            <div class="layer-block ${b.cls}">
+              <div class="lb-icon">${b.icon}</div>
+              <div class="lb-name">${b.name}</div>
+              <div class="lb-tech">${b.tech}</div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+      diag.appendChild(row);
+
+      if (layer.arrow) {
+        const arr = document.createElement('div');
+        arr.className = 'stack-arrow';
+        arr.innerHTML = `<div class="arrow-line"></div><div class="arrow-label">↕ ${layer.arrow}</div>`;
+        diag.appendChild(arr);
+      }
+    });
+  }
+
+  function renderFlows() {
+    const grid = document.getElementById('flow-grid');
+    flows.forEach(f => {
+      const card = document.createElement('div');
+      card.className = 'flow-card';
+      card.innerHTML = `
+        <div class="flow-card-icon">${f.icon}</div>
+        <div class="flow-card-title">${f.title}</div>
+        <ol class="flow-steps">
+          ${f.steps.map(s => `<li>${s}</li>`).join('')}
+        </ol>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  function renderNetcode() {
+    const grid = document.getElementById('netcode-grid');
+    netcodeCards.forEach(f => {
+      const card = document.createElement('div');
+      card.className = 'flow-card';
+      card.innerHTML = `
+        <div class="flow-card-icon">${f.icon}</div>
+        <div class="flow-card-title">${f.title}</div>
+        <ol class="flow-steps">
+          ${f.steps.map(s => `<li>${s}</li>`).join('')}
+        </ol>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  function renderSpecs() {
+    const tbody = document.getElementById('spec-tbody');
+    specs.forEach(s => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${s.comp}</td>
+        <td><strong style="color:var(--bright);font-size:13px">${s.choice}</strong></td>
+        <td>${s.why}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // ====== TAB SWITCHING ======
+  function switchTab(tab) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+    event.currentTarget.classList.add('active');
+  }
+
+  // ====== INIT ======
+  renderGalaxies();
+  renderStack();
+  renderFlows();
+  renderNetcode();
+  renderSpecs();
+</script>
+</body>
+</html>

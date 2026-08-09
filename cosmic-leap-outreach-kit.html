@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cosmic Leap — IP Outreach Kit</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+  :root {
+    --void:#04040a;--panel:#0f0c1e;--card:#160f2c;--border:#2a1f4a;
+    --muted:#4a3a72;--ghost:#8877aa;--text:#e8e0ff;--bright:#ffffff;
+    --luna:#7c3aed;--shard:#a78bfa;--orbit:#06b6d4;--nova:#ff6b35;
+    --sol:#f59e0b;--safe:#10b981;--danger:#ef4444;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--void);color:var(--text);font-family:'Space Grotesk',sans-serif;min-height:100vh;}
+  body::before{content:'';position:fixed;inset:0;background-image:
+    radial-gradient(1px 1px at 20% 20%,rgba(255,255,255,.3) 0%,transparent 100%),
+    radial-gradient(1px 1px at 70% 10%,rgba(167,139,250,.4) 0%,transparent 100%),
+    radial-gradient(1px 1px at 90% 50%,rgba(255,255,255,.2) 0%,transparent 100%),
+    radial-gradient(1px 1px at 10% 70%,rgba(167,139,250,.3) 0%,transparent 100%),
+    radial-gradient(1px 1px at 50% 80%,rgba(255,255,255,.15) 0%,transparent 100%);
+    pointer-events:none;z-index:0;}
+  .wrap{position:relative;z-index:1;max-width:1000px;margin:0 auto;padding:0 20px 80px;}
+
+  .header{padding:44px 0 28px;text-align:center;}
+  .eyebrow{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--shard);margin-bottom:12px;}
+  .header h1{font-size:clamp(22px,4vw,40px);font-weight:700;color:var(--bright);letter-spacing:-0.5px;}
+  .header h1 span{background:linear-gradient(135deg,var(--nova),var(--shard),var(--orbit));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .header-sub{margin-top:8px;color:var(--ghost);font-size:13px;}
+
+  .tabs{display:flex;gap:3px;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:4px;margin-bottom:24px;}
+  .tab-btn{flex:1;padding:10px;border:none;border-radius:9px;background:transparent;color:var(--ghost);font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px;}
+  .tab-btn:hover{color:var(--text);}
+  .tab-btn.active{background:linear-gradient(135deg,var(--luna),#4c1d95);color:var(--bright);box-shadow:0 0 16px rgba(124,58,237,.3);}
+  .tab-content{display:none;} .tab-content.active{display:block;}
+
+  .section-label{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+  .section-title{font-size:20px;font-weight:600;color:var(--bright);margin-bottom:18px;}
+  .hl{background:rgba(124,58,237,.06);border:1px solid rgba(124,58,237,.2);border-radius:10px;padding:14px 16px;margin-bottom:18px;}
+  .hl-title{font-size:12px;font-weight:600;color:var(--shard);margin-bottom:6px;}
+  .hl p{font-size:12px;color:var(--ghost);line-height:1.7;}
+  .divider{height:1px;background:var(--border);margin:24px 0;}
+  .arch-title{font-size:13px;font-weight:600;color:var(--bright);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+  .arch-title::after{content:'';flex:1;height:1px;background:var(--border);}
+
+  /* EMAIL CARDS */
+  .email-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;margin-bottom:12px;overflow:hidden;}
+  .email-header{display:flex;align-items:center;gap:14px;padding:16px 18px;cursor:pointer;transition:background .2s;}
+  .email-header:hover{background:rgba(124,58,237,.05);}
+  .email-card.open .email-header{background:rgba(124,58,237,.08);border-bottom:1px solid var(--border);}
+  .email-num{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:var(--bright);flex-shrink:0;}
+  .email-info{flex:1;}
+  .email-title{font-size:14px;font-weight:600;color:var(--bright);margin-bottom:2px;}
+  .email-sub{font-size:11px;color:var(--ghost);}
+  .email-tag{font-family:'Space Mono',monospace;font-size:9px;padding:3px 8px;border-radius:4px;}
+  .tag-cold{background:rgba(6,182,212,.12);color:var(--orbit);}
+  .tag-warm{background:rgba(16,185,129,.12);color:var(--safe);}
+  .tag-reddit{background:rgba(255,107,53,.12);color:var(--nova);}
+  .email-chevron{color:var(--muted);transition:transform .2s;font-size:11px;}
+  .email-card.open .email-chevron{transform:rotate(180deg);}
+  .email-body{display:none;padding:18px;}
+  .email-card.open .email-body{display:block;}
+  .email-field{margin-bottom:12px;}
+  .field-label{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
+  .field-value{font-size:12px;color:var(--ghost);background:rgba(255,255,255,.03);border-radius:6px;padding:8px 10px;}
+  .email-body-text{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-size:12px;color:var(--text);line-height:1.8;white-space:pre-wrap;font-family:'Space Grotesk',sans-serif;}
+  .copy-btn{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:8px 14px;background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.3);border-radius:8px;color:var(--shard);font-size:12px;font-family:'Space Grotesk',sans-serif;cursor:pointer;transition:all .2s;}
+  .copy-btn:hover{background:rgba(124,58,237,.25);}
+  .copied{background:rgba(16,185,129,.15);border-color:rgba(16,185,129,.3);color:var(--safe);}
+
+  /* STUDIO LIST */
+  .studio-grid{display:grid;gap:10px;}
+  .studio-card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px 18px;display:flex;gap:14px;align-items:flex-start;}
+  .studio-icon{font-size:28px;flex-shrink:0;}
+  .studio-info{flex:1;}
+  .studio-name{font-size:14px;font-weight:600;color:var(--bright);margin-bottom:3px;}
+  .studio-desc{font-size:11px;color:var(--ghost);line-height:1.5;margin-bottom:8px;}
+  .studio-meta{display:flex;gap:6px;flex-wrap:wrap;}
+  .studio-tag{font-family:'Space Mono',monospace;font-size:8px;padding:2px 7px;border-radius:3px;letter-spacing:1px;}
+  .t-indie{background:rgba(124,58,237,.12);color:var(--shard);}
+  .t-platform{background:rgba(6,182,212,.12);color:var(--orbit);}
+  .t-au{background:rgba(16,185,129,.12);color:var(--safe);}
+  .t-unity{background:rgba(255,107,53,.12);color:var(--nova);}
+  .t-mobile{background:rgba(245,158,11,.12);color:var(--sol);}
+  .studio-link{font-family:'Space Mono',monospace;font-size:9px;color:var(--shard);text-decoration:none;}
+  .studio-link:hover{color:var(--orbit);}
+  .studio-status{padding:3px 8px;border-radius:4px;font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1px;flex-shrink:0;margin-top:2px;}
+  .s-unsent{background:rgba(74,58,114,.3);color:var(--ghost);}
+  .s-sent{background:rgba(245,158,11,.12);color:var(--sol);}
+  .s-replied{background:rgba(16,185,129,.12);color:var(--safe);}
+  .s-pass{background:rgba(239,68,68,.12);color:var(--danger);}
+  select.status-select{background:var(--card);border:1px solid var(--border);color:var(--text);font-family:'Space Mono',monospace;font-size:9px;padding:3px 6px;border-radius:4px;cursor:pointer;margin-top:8px;}
+
+  /* TRACKER */
+  .tracker-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:24px;}
+  .tracker-stat{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;}
+  .tracker-num{font-size:28px;font-weight:700;color:var(--bright);margin-bottom:3px;}
+  .tracker-label{font-family:'Space Mono',monospace;font-size:9px;color:var(--ghost);letter-spacing:1px;}
+  .progress-bar{height:8px;background:var(--card);border-radius:4px;overflow:hidden;margin-bottom:6px;}
+  .progress-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--luna),var(--orbit));transition:width .4s;}
+  .progress-label{font-family:'Space Mono',monospace;font-size:9px;color:var(--ghost);}
+  .checklist{display:flex;flex-direction:column;gap:8px;}
+  .check-item{display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:10px 14px;cursor:pointer;transition:all .2s;}
+  .check-item:hover{border-color:var(--muted);}
+  .check-item.done{border-color:rgba(16,185,129,.3);background:rgba(16,185,129,.04);}
+  .check-box{width:18px;height:18px;border:2px solid var(--border);border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;transition:all .2s;}
+  .check-item.done .check-box{background:var(--safe);border-color:var(--safe);}
+  .check-text{font-size:12px;color:var(--text);}
+  .check-item.done .check-text{text-decoration:line-through;color:var(--ghost);}
+
+  ::-webkit-scrollbar{width:5px;} ::-webkit-scrollbar-track{background:var(--void);} ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <div class="eyebrow">Option A — IP Licensing Outreach Kit</div>
+    <h1>Cosmic Leap: <span>Starbound Odyssey</span></h1>
+    <div class="header-sub">Your complete outreach toolkit — email templates, studio list, and progress tracker</div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('emails',this)">✉️ Email Templates</button>
+    <button class="tab-btn" onclick="switchTab('studios',this)">🎮 Studio List</button>
+    <button class="tab-btn" onclick="switchTab('tracker',this)">📊 My Tracker</button>
+    <button class="tab-btn" onclick="switchTab('tips',this)">💡 Negotiation Tips</button>
+  </div>
+
+  <!-- ======= EMAILS TAB ======= -->
+  <div class="tab-content active" id="tab-emails">
+    <div class="section-label">Ready to Send</div>
+    <div class="section-title">Email Templates — Copy, Personalise, Send</div>
+    <div class="hl">
+      <div class="hl-title">📋 How to use these templates</div>
+      <p>Replace anything in [SQUARE BRACKETS] with the real information before sending. Send Email 1 first to all studios. Wait 7 days. If no reply, send Email 2 (follow-up). Never send more than 2 follow-ups to the same studio. Post Template 3 on Reddit and itch.io forums.</p>
+    </div>
+    <div id="email-list"></div>
+  </div>
+
+  <!-- ======= STUDIOS TAB ======= -->
+  <div class="tab-content" id="tab-studios">
+    <div class="section-label">Target Studios</div>
+    <div class="section-title">Who to Contact — Ranked by Fit</div>
+    <div class="hl">
+      <div class="hl-title">🎯 Strategy</div>
+      <p>Start with Tier 1 studios — small Australian and indie studios most likely to respond to an individual IP holder. Send to all Tier 1 targets in Week 1. Move to Tier 2 in Week 2 if needed. Tier 3 is a long shot but worth one email each.</p>
+    </div>
+    <div class="arch-title">Tier 1 — Best Fit (Send First)</div>
+    <div class="studio-grid" id="tier1"></div>
+    <div class="divider"></div>
+    <div class="arch-title">Tier 2 — Good Fit (Send Week 2)</div>
+    <div class="studio-grid" id="tier2"></div>
+    <div class="divider"></div>
+    <div class="arch-title">Tier 3 — Reach (Send Week 3 if needed)</div>
+    <div class="studio-grid" id="tier3"></div>
+  </div>
+
+  <!-- ======= TRACKER TAB ======= -->
+  <div class="tab-content" id="tab-tracker">
+    <div class="section-label">Your Progress</div>
+    <div class="section-title">Outreach Tracker</div>
+    <div class="tracker-grid" id="tracker-stats"></div>
+    <div class="arch-title">Progress to First Deal</div>
+    <div class="progress-bar"><div class="progress-fill" id="overall-progress" style="width:0%"></div></div>
+    <div class="progress-label" id="progress-label">0 of 20 studios contacted</div>
+    <div class="divider"></div>
+    <div class="arch-title">Preparation Checklist</div>
+    <div class="checklist" id="checklist"></div>
+  </div>
+
+  <!-- ======= TIPS TAB ======= -->
+  <div class="tab-content" id="tab-tips">
+    <div class="section-label">Negotiation Guidance</div>
+    <div class="section-title">How to Handle Responses</div>
+    <div id="tips-content"></div>
+  </div>
+</div>
+
+<script>
+const emails = [
+  {
+    num:'1', color:'var(--orbit)', tag:'COLD EMAIL', tagCls:'tag-cold',
+    title:'Initial Outreach Email',
+    sub:'Send this first to every studio on the list',
+    to:'[Studio contact email — find on their website under Contact or Press]',
+    subject:'Original Game IP for License — 3D Gravity Platformer, Complete GDD',
+    body:`Dear [Studio Name] Team,
+
+My name is Dr Manas Swain, Founder of Aussi-Nexus Group (ABN 76 947 108 181), based in Queensland, Australia. I am writing to offer an exclusive licensing opportunity for an original game IP I have developed.
+
+THE IP — COSMIC LEAP: STARBOUND ODYSSEY
+
+A 3D gravity-platformer where players leap between 7 asteroid worlds, each with a unique gravity mechanic. The game supports 1–4 players online across four modes: solo campaign, competitive race, PvP arena, and co-op puzzles.
+
+WHAT IS FULLY DESIGNED AND READY:
+• Complete Game Design Document (7 worlds, 4 characters, 4 game modes)
+• Full character roster with ability trees and unlock conditions
+• Star Shard token economy (F2P entry, earn-through-skill, optional purchases)
+• Technical architecture specification (Unity 6, Photon Fusion, Firebase, Stripe)
+• Monetisation model with pricing tiers and revenue projections
+• 7-phase deployment roadmap (prototype through Steam/Google Play/App Store)
+
+DEAL STRUCTURES AVAILABLE:
+• Full IP sale (outright purchase)
+• Revenue share license (0% upfront, royalty on net revenue)
+• Co-publishing agreement (60/40 revenue split)
+
+I am happy to share the full interactive Game Bible at no cost and with no obligation. It is a browser-based document covering all of the above in detail.
+
+If this is of interest to your studio, I would welcome a brief email or call at your convenience.
+
+Warm regards,
+Dr Manas Swain
+Founder & Owner — Aussi-Nexus Group
+ABN 76 947 108 181
+Shailer Park, Queensland, Australia
+[Your email address]
+[Your phone number — optional]
+aunexus.nexus`
+  },
+  {
+    num:'2', color:'var(--sol)', tag:'FOLLOW-UP', tagCls:'tag-warm',
+    title:'7-Day Follow-Up Email',
+    sub:'Send this exactly 7 days after Email 1 if no reply',
+    to:'Same recipient as Email 1',
+    subject:'Following up — Cosmic Leap IP Licensing',
+    body:`Dear [Studio Name] Team,
+
+I wanted to briefly follow up on my email from [DATE — 7 days ago], regarding the Cosmic Leap: Starbound Odyssey game IP I have available for licensing.
+
+I understand inboxes get busy. I simply wanted to confirm that the opportunity is still available and I am happy to answer any quick questions before you decide whether to take a look at the full game bible.
+
+The short version: it is a complete, original 3D gravity-platformer IP with full design documents, character roster, economy model, and technical specification — ready for a studio to build immediately. Revenue share licensing is available with zero upfront cost to the studio.
+
+If this is not the right fit for [Studio Name], I completely understand — no need to respond. But if there is any interest, even just to see the materials, I am happy to share them at no obligation.
+
+Thank you for your time.
+
+Warm regards,
+Dr Manas Swain
+Aussi-Nexus Group
+[Your email address]`
+  },
+  {
+    num:'3', color:'var(--nova)', tag:'PUBLIC POST', tagCls:'tag-reddit',
+    title:'Reddit / itch.io Community Post',
+    sub:'Post this on r/gamedev, r/indiegaming, and itch.io forums',
+    to:'r/gamedev · r/indiegaming · itch.io community forum',
+    subject:'[OPPORTUNITY] Complete 3D platformer game IP available for licensing — revenue share, no upfront cost',
+    body:`Hey everyone,
+
+I have a fully designed original game IP that I am looking to license or sell to a development studio or solo developer. Happy to do a revenue share deal with zero upfront cost if the right developer wants to build it.
+
+THE GAME: Cosmic Leap: Starbound Odyssey
+
+A 3D gravity-platformer across 7 asteroid worlds, each with a unique gravity mechanic (low-G, zero-G, magnetic surfaces, echolocation, thermal currents, ice physics, and a final world combining all of them). Supports 1–4 players online.
+
+WHAT'S ALREADY DESIGNED (and documented):
+✅ Complete GDD — 7 worlds, full boss designs, level gimmicks, co-op paths
+✅ 4 original characters with full ability trees
+✅ F2P "Star Shard" token economy — earn through skill, buy packs optionally
+✅ Technical architecture — Unity 6, Photon Fusion 2, Firebase, Stripe
+✅ Monetisation model with pricing tiers
+✅ Full deployment roadmap
+
+DEAL OPTIONS:
+→ Revenue share (0% upfront, royalty on net revenue — negotiable 8–15%)
+→ Full IP sale (open to offers)
+→ Co-publishing (60/40 split, I provide ongoing creative direction)
+
+I am the idea person, not the developer. I want this game to exist in the world, and I want to find the right person or studio to build it. If you are a developer who is good at building but struggles with the creative/design side — this might be a good fit.
+
+DM me or comment and I will share the full game bible for free, no NDA required.
+
+About me: Dr Manas Swain, Founder of Aussi-Nexus Group (ABN 76 947 108 181), Queensland Australia. I run 35+ digital platforms. This is my first game IP. The design is solid — I just want to see it built by people who know how.`
+  },
+  {
+    num:'4', color:'var(--shard)', tag:'REPLY TEMPLATE', tagCls:'tag-warm',
+    title:'When a Studio Replies With Interest',
+    sub:'Use this when someone responds positively — send the game bible and schedule a call',
+    to:'Interested studio — reply to their message',
+    subject:'RE: Cosmic Leap IP — Game Bible + Next Steps',
+    body:`Dear [Name],
+
+Thank you for getting back to me — I am glad to hear of your interest.
+
+I am attaching the full Cosmic Leap: Starbound Odyssey Game Bible to this email. It covers everything in detail: all 7 worlds, character ability trees, the complete Star Shard economy, the technical architecture, and a deployment roadmap.
+
+There is also a browser-based interactive version which may be easier to explore — I can share a link to that separately if you prefer.
+
+A few things to note as you review:
+
+1. All intellectual property is original — no licensed assets, no Nintendo references, clean trademark path.
+2. The IP has been developed under my registered Australian business, Aussi-Nexus Group (ABN 76 947 108 181).
+3. I am genuinely flexible on deal structure — the priority for me is finding the right studio to bring this to life, not maximising the upfront fee.
+
+I would love to have a brief 20-minute call once you have had a chance to look through the materials. I am available most mornings AEST — please suggest a time that suits you.
+
+Looking forward to the conversation.
+
+Warm regards,
+Dr Manas Swain
+Founder & Owner — Aussi-Nexus Group
+ABN 76 947 108 181
+[Your email]
+[Your phone — optional]`
+  }
+];
+
+const tier1Studios = [
+  {icon:'🦘',name:'Witch Beam Games',desc:'Brisbane studio — made Unpacking (2021). Indie, Unity-based, known for creative original IP. Responded positively to Australian creators in past interviews.',tags:['t-indie','t-au','t-unity'],link:'witchbeam.com.au'},
+  {icon:'🐨',name:'SMG Studio',desc:'Melbourne studio — made Moving Out, Death Squared. Does original IP and licensed projects. Open about working with external creators.',tags:['t-indie','t-au','t-mobile'],link:'smgstudio.com'},
+  {icon:'🎮',name:'Flat Earth Games',desc:'Adelaide studio — made Pumpkin Jack (3D platformer). Direct genre match. Small team that understands platformer design deeply.',tags:['t-indie','t-au','t-unity'],link:'flatearth.games'},
+  {icon:'🌏',name:'Tin Man Games',desc:'Melbourne-based — primarily narrative games but have published third-party IP before. Open to acquisition discussions.',tags:['t-indie','t-au'],link:'tinmangames.com.au'},
+  {icon:'🎯',name:'itch.io Dev Community',desc:'Not a studio — post your public listing here. Many solo developers and small teams actively look for game IP to build. Free, immediate reach to thousands.',tags:['t-indie','t-platform'],link:'itch.io/community'},
+  {icon:'💬',name:'r/gamedev (Reddit)',desc:'160,000+ developers. Post your opportunity publicly. Revenue share deals are regularly discussed and arranged here. Zero cost.',tags:['t-platform'],link:'reddit.com/r/gamedev'},
+];
+
+const tier2Studios = [
+  {icon:'🌊',name:'Stirfire Studios',desc:'Brisbane indie — known for engaging with the AU dev community. Have shipped original IP titles with F2P mobile models.',tags:['t-indie','t-au','t-mobile'],link:'stirfire.com.au'},
+  {icon:'🚀',name:'League of Geeks',desc:'Melbourne — made Armello. Strong track record with original IP, Unity, and F2P economies. Slightly larger but have expressed interest in external IP before.',tags:['t-indie','t-au','t-unity'],link:'leagueofgeeks.com'},
+  {icon:'🎲',name:'Mighty Kingdom',desc:'Adelaide studio — publish third-party IP regularly and have a Unity-heavy pipeline. Active in the AU indie community.',tags:['t-indie','t-au','t-unity','t-mobile'],link:'mightykingdom.com.au'},
+  {icon:'🌟',name:'Defiant Development',desc:'Brisbane studio — shipped Card Hunter and Hand of Fate. Understand F2P economy design. May be interested in licensing.',tags:['t-indie','t-au'],link:'defiant.com.au'},
+];
+
+const tier3Studios = [
+  {icon:'🌍',name:'Finji',desc:'US indie publisher — published Chicory, Night in the Woods. Known for taking on independent creators. Revenue share deals are their model.',tags:['t-indie','t-platform'],link:'finji.co'},
+  {icon:'🎪',name:'Raw Fury',desc:'Sweden-based indie publisher — actively seeking original IP. Published Kingdom, Norco, Cassette Beasts. Revenue share model.',tags:['t-indie','t-platform'],link:'rawfury.com'},
+  {icon:'🔮',name:'Devolver Digital',desc:'Large indie publisher — high bar but they actively solicit pitches at devolver.com/pitch. Worth one email.',tags:['t-indie','t-platform'],link:'devolver.com/pitch'},
+  {icon:'🎵',name:'Annapurna Interactive',desc:'Premium indie publisher. Very selective but known for emotional, creative IP. Submit via their open pitch form.',tags:['t-indie','t-platform'],link:'annapurnainteractive.com/submissions'},
+];
+
+const checklist = [
+  'Save the IP Pitch Document (cosmic-leap-ip-pitch.docx) to a safe folder',
+  'Save the Game Bible (cosmic-leap-game-bible.html) to the same folder',
+  'Write your personal email address at the bottom of the pitch document',
+  'Create a free Gmail address just for game IP outreach (e.g. cosmicleap.ip@gmail.com)',
+  'Look up the contact email for each Tier 1 studio — usually found under Press or Contact on their website',
+  'Personalise Email Template 1 with each studio name before sending',
+  'Send Email 1 to all 4 Tier 1 studios in one sitting',
+  'Post Template 3 on r/gamedev (reddit.com/r/gamedev)',
+  'Post Template 3 on itch.io community forum',
+  'Mark each studio as Sent in the Studio List tab',
+  'Set a 7-day reminder to send follow-up emails',
+  'Reply to any interested parties using Template 4',
+];
+
+const tips = [
+  {icon:'💰',title:'Someone asks your price — what to say',color:'var(--shard)',
+   content:`Don't name a number first. Say:\n\n"I am open to fair offers and would love to hear what works for your studio's model. I have had interest in both outright purchase and revenue share arrangements — which structure interests you more?"\n\nThis puts the first number on them. Whatever they say, you can either accept, counter, or say you need a day to think about it. Never feel pressured to answer immediately.`},
+  {icon:'📝',title:'Someone wants an NDA before seeing materials',color:'var(--orbit)',
+   content:`This is normal and professional. Say:\n\n"Absolutely, I am happy to sign an NDA. Please send your standard template and I will review it."\n\nIf they send something very complex, ask a community forum (r/gamedev) whether it looks standard. Most studio NDAs are straightforward. Do not sign anything that claims ownership of your ideas after the NDA expires.`},
+  {icon:'⚖️',title:'Someone offers a very low amount',color:'var(--sol)',
+   content:`Do not accept or reject immediately. Say:\n\n"Thank you for the offer. I need a couple of days to think it through — I will come back to you by [specific date]."\n\nThen counter with your target figure. If they offered $1,000 and you want $5,000, counter with $6,000 — this leaves room to settle somewhere you're both happy.`},
+  {icon:'🤝',title:'Revenue share — what to push for',color:'var(--safe)',
+   content:`Aim for 10–15% of net revenue (after platform fees). The studio may push back to 5–8%. A reasonable middle ground is 8% with a minimum monthly guarantee of $150–$200 AUD.\n\nAlways ask for: quarterly revenue reports sent to you by email, and the right to request an audit if numbers seem wrong. These are standard and no legitimate studio will refuse them.`},
+  {icon:'🚫',title:'Red flags — when to walk away',color:'var(--danger)',
+   content:`Walk away from any studio that:\n• Asks you to sign over all rights before seeing a contract\n• Refuses to put the deal in writing\n• Cannot show you at least 2 previously shipped games\n• Pressures you to decide immediately\n• Offers equity in their studio instead of cash or royalties (this is almost always worthless)\n\nTrust your instincts. If something feels wrong, it probably is.`},
+  {icon:'📅',title:'If nobody replies after 3 weeks',color:'var(--ghost)',
+   content:`This does not mean the IP has no value. It means your outreach needs adjusting. Try:\n\n1. Repost on Reddit with a different headline\n2. Post a short video walkthrough of the Game Bible on YouTube and share the link\n3. Contact the Australian Game Developers Association (AGDA) — they may know studios actively seeking IP\n4. Consider a solo developer on Upwork instead of a studio — they may be more responsive to a revenue share offer\n\nPatience is part of this process. Most successful IP deals take 4–12 weeks to close.`},
+];
+
+// RENDER
+function renderEmails(){
+  const list=document.getElementById('email-list');
+  emails.forEach((e,i)=>{
+    const div=document.createElement('div');
+    div.className='email-card';div.id='email-'+i;
+    div.innerHTML=`
+      <div class="email-header" onclick="toggleEmail(${i})">
+        <div class="email-num" style="background:${e.color}20;color:${e.color}">${e.num}</div>
+        <div class="email-info"><div class="email-title">${e.title}</div><div class="email-sub">${e.sub}</div></div>
+        <span class="email-tag ${e.tagCls}">${e.tag}</span>
+        <div class="email-chevron">▼</div>
+      </div>
+      <div class="email-body">
+        <div class="email-field"><div class="field-label">To</div><div class="field-value">${e.to}</div></div>
+        <div class="email-field"><div class="field-label">Subject Line</div><div class="field-value">${e.subject}</div></div>
+        <div class="email-field"><div class="field-label">Email Body — Copy This</div><div class="email-body-text" id="body-${i}">${e.body}</div></div>
+        <button class="copy-btn" onclick="copyEmail(${i},this)">📋 Copy Email Body</button>
+      </div>`;
+    list.appendChild(div);
+  });
+}
+
+function toggleEmail(i){
+  const c=document.getElementById('email-'+i);
+  c.classList.toggle('open');
+}
+
+function copyEmail(i,btn){
+  const text=document.getElementById('body-'+i).textContent;
+  navigator.clipboard.writeText(text).then(()=>{
+    btn.classList.add('copied');btn.textContent='✅ Copied!';
+    setTimeout(()=>{btn.classList.remove('copied');btn.textContent='📋 Copy Email Body';},2000);
+  });
+}
+
+function renderStudios(studios, containerId){
+  const grid=document.getElementById(containerId);
+  studios.forEach((s,idx)=>{
+    const div=document.createElement('div');div.className='studio-card';
+    const statusKey=containerId+'-'+idx;
+    const saved=localStorage&&localStorage.getItem?localStorage.getItem(statusKey)||'unsent':'unsent';
+    div.innerHTML=`
+      <div class="studio-icon">${s.icon}</div>
+      <div class="studio-info">
+        <div class="studio-name">${s.name}</div>
+        <div class="studio-desc">${s.desc}</div>
+        <div class="studio-meta">${s.tags.map(t=>`<span class="studio-tag ${t}">${t.replace('t-','').toUpperCase()}</span>`).join('')}</div>
+        <a class="studio-link" href="https://${s.link}" target="_blank">🔗 ${s.link}</a>
+        <div>
+          <select class="status-select" onchange="saveStatus('${statusKey}',this.value,this)">
+            <option value="unsent" ${saved==='unsent'?'selected':''}>○ Not contacted</option>
+            <option value="sent" ${saved==='sent'?'selected':''}>→ Email sent</option>
+            <option value="replied" ${saved==='replied'?'selected':''}>✓ Replied</option>
+            <option value="pass" ${saved==='pass'?'selected':''}>✗ No interest</option>
+          </select>
+        </div>
+      </div>`;
+    grid.appendChild(div);
+  });
+}
+
+function saveStatus(key,val){
+  try{localStorage.setItem(key,val);}catch(e){}
+  updateTracker();
+}
+
+function updateTracker(){
+  const allStudios=[...tier1Studios,...tier2Studios,...tier3Studios];
+  let sent=0,replied=0,pass=0;
+  allStudios.forEach((_,i)=>{
+    const containers=['tier1','tier2','tier3'];
+    containers.forEach(c=>{
+      const key=c+'-'+i;
+      try{
+        const v=localStorage&&localStorage.getItem?localStorage.getItem(key):'';
+        if(v==='sent'||v==='replied'||v==='pass') sent++;
+        if(v==='replied') replied++;
+        if(v==='pass') pass++;
+      }catch(e){}
+    });
+  });
+  const total=allStudios.length;
+  document.getElementById('overall-progress').style.width=(sent/total*100)+'%';
+  document.getElementById('progress-label').textContent=`${sent} of ${total} studios contacted`;
+  const stats=document.getElementById('tracker-stats');
+  if(stats.children.length===0){
+    ['total-stat','sent-stat','replied-stat','pass-stat'].forEach(id=>{
+      const d=document.createElement('div');d.className='tracker-stat';d.id=id;stats.appendChild(d);
+    });
+  }
+  document.getElementById('total-stat').innerHTML=`<div class="tracker-num">${total}</div><div class="tracker-label">TOTAL STUDIOS</div>`;
+  document.getElementById('sent-stat').innerHTML=`<div class="tracker-num" style="color:var(--sol)">${sent}</div><div class="tracker-label">CONTACTED</div>`;
+  document.getElementById('replied-stat').innerHTML=`<div class="tracker-num" style="color:var(--safe)">${replied}</div><div class="tracker-label">REPLIED</div>`;
+  document.getElementById('pass-stat').innerHTML=`<div class="tracker-num" style="color:var(--ghost)">${pass}</div><div class="tracker-label">PASSED</div>`;
+}
+
+function renderChecklist(){
+  const cl=document.getElementById('checklist');
+  checklist.forEach((item,i)=>{
+    const saved=localStorage&&localStorage.getItem?localStorage.getItem('check-'+i)==='done':false;
+    const div=document.createElement('div');
+    div.className='check-item'+(saved?' done':'');
+    div.onclick=()=>{
+      div.classList.toggle('done');
+      try{localStorage.setItem('check-'+i,div.classList.contains('done')?'done':'');}catch(e){}
+    };
+    div.innerHTML=`<div class="check-box">${saved?'✓':''}</div><div class="check-text">${item}</div>`;
+    cl.appendChild(div);
+  });
+}
+
+function renderTips(){
+  const container=document.getElementById('tips-content');
+  tips.forEach(t=>{
+    const div=document.createElement('div');
+    div.style.cssText='background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:10px;';
+    div.innerHTML=`
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <span style="font-size:22px">${t.icon}</span>
+        <div style="font-size:13px;font-weight:600;color:${t.color}">${t.title}</div>
+      </div>
+      <div style="font-size:12px;color:var(--ghost);line-height:1.8;white-space:pre-wrap">${t.content}</div>`;
+    container.appendChild(div);
+  });
+}
+
+function switchTab(tab,btn){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  btn.classList.add('active');
+}
+
+// INIT
+renderEmails();
+renderStudios(tier1Studios,'tier1');
+renderStudios(tier2Studios,'tier2');
+renderStudios(tier3Studios,'tier3');
+renderChecklist();
+renderTips();
+updateTracker();
+document.getElementById('email-0').classList.add('open');
+</script>
+</body>
+</html>

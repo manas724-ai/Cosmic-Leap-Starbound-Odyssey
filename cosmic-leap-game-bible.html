@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cosmic Leap: Starbound Odyssey — Complete Game Bible</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+  :root {
+    --void:#04040a;--deep:#0a0818;--panel:#0f0c1e;--card:#160f2c;
+    --border:#2a1f4a;--muted:#4a3a72;--ghost:#8877aa;--text:#e8e0ff;--bright:#ffffff;
+    --nova:#ff6b35;--luna:#7c3aed;--sol:#f59e0b;--orbit:#06b6d4;--shard:#a78bfa;
+    --danger:#ef4444;--safe:#10b981;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--void);color:var(--text);font-family:'Space Grotesk',sans-serif;min-height:100vh;overflow-x:hidden;}
+  body::before{content:'';position:fixed;inset:0;background-image:
+    radial-gradient(1px 1px at 15% 25%,rgba(255,255,255,.35) 0%,transparent 100%),
+    radial-gradient(1px 1px at 65% 10%,rgba(255,255,255,.25) 0%,transparent 100%),
+    radial-gradient(1.5px 1.5px at 82% 55%,rgba(167,139,250,.45) 0%,transparent 100%),
+    radial-gradient(1px 1px at 38% 70%,rgba(255,255,255,.2) 0%,transparent 100%),
+    radial-gradient(1px 1px at 92% 38%,rgba(255,255,255,.3) 0%,transparent 100%),
+    radial-gradient(1px 1px at 8% 82%,rgba(167,139,250,.4) 0%,transparent 100%),
+    radial-gradient(1px 1px at 55% 48%,rgba(255,255,255,.15) 0%,transparent 100%),
+    radial-gradient(1px 1px at 72% 88%,rgba(255,255,255,.2) 0%,transparent 100%),
+    radial-gradient(1px 1px at 30% 5%,rgba(6,182,212,.3) 0%,transparent 100%);
+    pointer-events:none;z-index:0;}
+  .container{position:relative;z-index:1;max-width:1120px;margin:0 auto;padding:0 20px 80px;}
+
+  /* HEADER */
+  .header{padding:48px 0 32px;text-align:center;}
+  .header-eyebrow{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--shard);margin-bottom:14px;}
+  .header h1{font-size:clamp(26px,5vw,50px);font-weight:700;color:var(--bright);line-height:1.1;letter-spacing:-1px;}
+  .header h1 span{background:linear-gradient(135deg,var(--nova) 0%,var(--shard) 50%,var(--orbit) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .header-sub{margin-top:10px;color:var(--ghost);font-size:13px;}
+  .header-badges{display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap;}
+  .hbadge{font-family:'Space Mono',monospace;font-size:9px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);color:var(--ghost);letter-spacing:1px;}
+
+  /* TABS */
+  .tabs{display:flex;gap:3px;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:4px;margin-bottom:28px;overflow-x:auto;}
+  .tab-btn{flex:1;min-width:120px;padding:10px 14px;border:none;border-radius:9px;background:transparent;color:var(--ghost);font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap;}
+  .tab-btn:hover{color:var(--text);}
+  .tab-btn.active{background:linear-gradient(135deg,var(--luna),#4c1d95);color:var(--bright);box-shadow:0 0 20px rgba(124,58,237,.3);}
+  .tab-content{display:none;} .tab-content.active{display:block;}
+
+  /* SHARED */
+  .section-label{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+  .section-title{font-size:21px;font-weight:600;color:var(--bright);margin-bottom:20px;}
+  .highlight-box{background:rgba(124,58,237,.06);border:1px solid rgba(124,58,237,.2);border-radius:10px;padding:14px 18px;margin-bottom:20px;}
+  .highlight-box-title{font-size:12px;font-weight:600;color:var(--shard);margin-bottom:7px;display:flex;align-items:center;gap:6px;}
+  .highlight-box p{font-size:12px;color:var(--ghost);line-height:1.7;}
+  .divider{height:1px;background:var(--border);margin:28px 0;}
+  .arch-title{font-size:13px;font-weight:600;color:var(--bright);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+  .arch-title::after{content:'';flex:1;height:1px;background:var(--border);}
+  .arch-section{margin-bottom:30px;}
+
+  /* GALAXY CARDS */
+  .galaxy-grid{display:grid;gap:10px;margin-bottom:32px;}
+  .galaxy-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;overflow:hidden;cursor:pointer;transition:all .25s;}
+  .galaxy-card:hover{border-color:var(--muted);transform:translateY(-1px);}
+  .galaxy-card.expanded{border-color:var(--luna);}
+  .galaxy-header{display:flex;align-items:center;gap:14px;padding:16px 18px;}
+  .galaxy-num{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);min-width:22px;}
+  .galaxy-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+  .galaxy-info{flex:1;}
+  .galaxy-name{font-size:14px;font-weight:600;color:var(--bright);margin-bottom:2px;}
+  .galaxy-tagline{font-size:11px;color:var(--ghost);}
+  .galaxy-meta{display:flex;gap:6px;align-items:center;}
+  .diff-badge{font-family:'Space Mono',monospace;font-size:8px;padding:3px 7px;border-radius:4px;letter-spacing:1px;text-transform:uppercase;}
+  .diff-1{background:rgba(16,185,129,.15);color:#10b981;} .diff-2{background:rgba(245,158,11,.15);color:#f59e0b;} .diff-3{background:rgba(239,68,68,.15);color:#ef4444;}
+  .shard-reward{font-family:'Space Mono',monospace;font-size:10px;color:var(--shard);background:rgba(167,139,250,.1);padding:3px 7px;border-radius:4px;white-space:nowrap;}
+  .chevron{color:var(--muted);transition:transform .2s;font-size:11px;}
+  .galaxy-card.expanded .chevron{transform:rotate(180deg);}
+  .galaxy-body{display:none;padding:0 18px 18px;border-top:1px solid var(--border);}
+  .galaxy-card.expanded .galaxy-body{display:block;}
+  .galaxy-body-inner{padding-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media(max-width:600px){.galaxy-body-inner{grid-template-columns:1fr;}}
+  .detail-label{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:7px;}
+  .detail-text{font-size:12px;color:var(--text);line-height:1.6;}
+  .mechanic-list{list-style:none;display:flex;flex-direction:column;gap:4px;}
+  .mechanic-list li{font-size:11px;color:var(--ghost);padding-left:13px;position:relative;line-height:1.5;}
+  .mechanic-list li::before{content:'◆';position:absolute;left:0;font-size:5px;top:5px;color:var(--shard);}
+  .boss-block{grid-column:1/-1;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:13px 15px;display:flex;gap:14px;align-items:flex-start;}
+  .boss-icon{font-size:26px;} .boss-info{flex:1;}
+  .boss-name{font-size:13px;font-weight:600;color:var(--bright);margin-bottom:3px;}
+  .boss-desc{font-size:11px;color:var(--ghost);line-height:1.5;}
+  .boss-weakness{font-family:'Space Mono',monospace;font-size:9px;color:var(--nova);margin-top:5px;}
+  .progression-bar{height:4px;background:var(--card);border-radius:2px;margin-top:20px;overflow:hidden;}
+  .progression-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--luna),var(--orbit));transition:width .5s ease;}
+  .progression-label{font-family:'Space Mono',monospace;font-size:9px;color:var(--ghost);margin-top:6px;display:flex;justify-content:space-between;}
+
+  /* STACK DIAGRAM */
+  .stack-diagram{display:flex;flex-direction:column;gap:3px;margin-bottom:28px;}
+  .stack-layer{display:flex;align-items:stretch;gap:3px;min-height:54px;}
+  .layer-label{width:76px;flex-shrink:0;display:flex;align-items:center;justify-content:flex-end;padding-right:10px;font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);text-align:right;}
+  .layer-blocks{flex:1;display:flex;gap:3px;}
+  .layer-block{flex:1;border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;justify-content:center;gap:2px;border:1px solid transparent;transition:all .2s;position:relative;}
+  .layer-block:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.4);}
+  .lb-client{background:rgba(255,107,53,.08);border-color:rgba(255,107,53,.2);}
+  .lb-engine{background:rgba(124,58,237,.08);border-color:rgba(124,58,237,.2);}
+  .lb-network{background:rgba(6,182,212,.08);border-color:rgba(6,182,212,.2);}
+  .lb-backend{background:rgba(16,185,129,.08);border-color:rgba(16,185,129,.2);}
+  .lb-data{background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.2);}
+  .lb-security{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.2);}
+  .lb-name{font-size:11px;font-weight:600;color:var(--bright);}
+  .lb-tech{font-family:'Space Mono',monospace;font-size:8px;color:var(--ghost);}
+  .lb-icon{position:absolute;top:7px;right:9px;font-size:14px;opacity:.4;}
+  .stack-arrow{display:flex;align-items:center;padding-left:76px;}
+  .arrow-line{width:2px;height:12px;background:var(--border);margin-left:18px;}
+  .arrow-label{font-family:'Space Mono',monospace;font-size:8px;color:var(--muted);margin-left:5px;letter-spacing:1px;}
+
+  /* FLOW CARDS */
+  .flow-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin-bottom:28px;}
+  .flow-card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px;}
+  .flow-card-icon{font-size:22px;margin-bottom:10px;}
+  .flow-card-title{font-size:12px;font-weight:600;color:var(--bright);margin-bottom:7px;}
+  .flow-steps{list-style:none;counter-reset:step;display:flex;flex-direction:column;gap:4px;}
+  .flow-steps li{counter-increment:step;font-size:11px;color:var(--ghost);line-height:1.4;padding-left:18px;position:relative;}
+  .flow-steps li::before{content:counter(step);position:absolute;left:0;top:0;font-family:'Space Mono',monospace;font-size:8px;color:var(--shard);width:13px;height:13px;background:rgba(167,139,250,.1);border-radius:3px;display:flex;align-items:center;justify-content:center;line-height:13px;text-align:center;}
+
+  /* SPEC TABLE */
+  .spec-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:22px;}
+  .spec-table th{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:7px 10px;text-align:left;border-bottom:1px solid var(--border);}
+  .spec-table td{padding:9px 10px;border-bottom:1px solid rgba(42,31,74,.5);color:var(--text);vertical-align:top;font-size:12px;}
+  .spec-table tr:last-child td{border-bottom:none;}
+  .spec-table td:first-child{color:var(--ghost);font-family:'Space Mono',monospace;font-size:9px;white-space:nowrap;width:130px;}
+
+  /* ===== MONETISATION ===== */
+  .mono-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:24px;}
+  .price-card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;transition:all .2s;position:relative;overflow:hidden;}
+  .price-card:hover{border-color:var(--luna);transform:translateY(-2px);}
+  .price-card.featured{border-color:var(--shard);background:rgba(124,58,237,.08);}
+  .price-card.featured::before{content:'BEST VALUE';position:absolute;top:10px;right:-24px;background:var(--shard);color:var(--void);font-family:'Space Mono',monospace;font-size:7px;padding:3px 28px;transform:rotate(35deg);letter-spacing:1px;}
+  .price-name{font-size:13px;font-weight:600;color:var(--bright);margin-bottom:4px;}
+  .price-amount{font-size:28px;font-weight:700;color:var(--bright);margin:10px 0 2px;}
+  .price-period{font-size:10px;color:var(--ghost);margin-bottom:12px;}
+  .price-shards{font-family:'Space Mono',monospace;font-size:14px;color:var(--shard);margin-bottom:8px;}
+  .price-bonus{font-family:'Space Mono',monospace;font-size:9px;color:var(--safe);background:rgba(16,185,129,.1);padding:2px 7px;border-radius:3px;}
+  .earn-table{width:100%;border-collapse:collapse;margin-bottom:24px;}
+  .earn-table th{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:7px 10px;text-align:left;border-bottom:1px solid var(--border);}
+  .earn-table td{padding:9px 10px;border-bottom:1px solid rgba(42,31,74,.4);font-size:12px;vertical-align:middle;}
+  .earn-table tr:last-child td{border-bottom:none;}
+  .earn-pos{color:var(--safe);font-family:'Space Mono',monospace;font-size:11px;font-weight:700;}
+  .earn-neg{color:var(--danger);font-family:'Space Mono',monospace;font-size:11px;font-weight:700;}
+  .earn-cat{font-family:'Space Mono',monospace;font-size:8px;padding:2px 6px;border-radius:3px;letter-spacing:1px;}
+  .cat-earn{background:rgba(16,185,129,.12);color:var(--safe);}
+  .cat-spend{background:rgba(239,68,68,.12);color:var(--danger);}
+  .cat-buy{background:rgba(167,139,250,.12);color:var(--shard);}
+
+  /* retention chart */
+  .retention-bars{display:flex;flex-direction:column;gap:8px;margin-bottom:24px;}
+  .ret-row{display:flex;align-items:center;gap:10px;}
+  .ret-label{font-size:11px;color:var(--ghost);width:120px;text-align:right;flex-shrink:0;}
+  .ret-bar-wrap{flex:1;background:var(--card);border-radius:3px;height:22px;overflow:hidden;position:relative;}
+  .ret-bar{height:100%;border-radius:3px;display:flex;align-items:center;padding-left:8px;font-family:'Space Mono',monospace;font-size:9px;color:var(--bright);transition:width .8s ease;}
+  .ret-val{font-family:'Space Mono',monospace;font-size:10px;color:var(--ghost);width:40px;text-align:right;}
+
+  /* ===== CHARACTER TREES ===== */
+  .char-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-bottom:28px;}
+  .char-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;overflow:hidden;cursor:pointer;transition:all .25s;}
+  .char-card:hover{transform:translateY(-2px);}
+  .char-header{padding:18px;display:flex;gap:14px;align-items:flex-start;}
+  .char-avatar{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;}
+  .char-meta{flex:1;}
+  .char-name{font-size:16px;font-weight:700;color:var(--bright);margin-bottom:2px;}
+  .char-role{font-size:11px;margin-bottom:8px;}
+  .stat-row{display:flex;flex-direction:column;gap:5px;}
+  .stat-item{display:flex;align-items:center;gap:8px;}
+  .stat-name{font-family:'Space Mono',monospace;font-size:8px;color:var(--muted);width:50px;text-align:right;flex-shrink:0;}
+  .stat-bar{flex:1;height:6px;background:var(--card);border-radius:3px;overflow:hidden;}
+  .stat-fill{height:100%;border-radius:3px;transition:width .6s ease;}
+  .char-body{padding:0 18px 18px;}
+  .ability-list{display:flex;flex-direction:column;gap:8px;}
+  .ability-item{background:var(--card);border-radius:8px;padding:10px 12px;border-left:3px solid transparent;}
+  .ability-name{font-size:12px;font-weight:600;color:var(--bright);margin-bottom:3px;display:flex;justify-content:space-between;align-items:center;}
+  .ability-desc{font-size:11px;color:var(--ghost);line-height:1.5;}
+  .ability-level{font-family:'Space Mono',monospace;font-size:8px;padding:2px 5px;border-radius:3px;background:rgba(167,139,250,.1);color:var(--shard);}
+  .ability-cost{font-family:'Space Mono',monospace;font-size:8px;color:var(--sol);}
+
+  /* ===== GDD COVER ===== */
+  .gdd-cover{background:linear-gradient(160deg,rgba(124,58,237,.15) 0%,rgba(6,182,212,.08) 50%,rgba(255,107,53,.08) 100%);border:1px solid var(--border);border-radius:16px;padding:32px;text-align:center;margin-bottom:28px;}
+  .gdd-logo{font-size:64px;margin-bottom:16px;}
+  .gdd-title{font-size:32px;font-weight:700;color:var(--bright);margin-bottom:4px;}
+  .gdd-subtitle{font-size:14px;color:var(--ghost);margin-bottom:20px;}
+  .gdd-tags{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:24px;}
+  .gdd-tag{font-family:'Space Mono',monospace;font-size:9px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);color:var(--ghost);}
+  .gdd-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:24px;}
+  .gdd-stat{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px;}
+  .gdd-stat-val{font-size:22px;font-weight:700;color:var(--bright);margin-bottom:2px;}
+  .gdd-stat-label{font-size:10px;color:var(--ghost);}
+  .gdd-roadmap{display:flex;flex-direction:column;gap:0;}
+  .rm-item{display:flex;gap:16px;align-items:flex-start;}
+  .rm-line{display:flex;flex-direction:column;align-items:center;}
+  .rm-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+  .rm-connector{width:2px;flex:1;min-height:30px;}
+  .rm-content{padding-bottom:20px;flex:1;text-align:left;}
+  .rm-phase{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--muted);margin-bottom:3px;}
+  .rm-title{font-size:13px;font-weight:600;color:var(--bright);margin-bottom:4px;}
+  .rm-items{font-size:11px;color:var(--ghost);line-height:1.6;}
+
+  /* DEPLOY TAB */
+  .deploy-step{background:var(--panel);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden;}
+  .deploy-step-header{display:flex;align-items:center;gap:14px;padding:16px 18px;cursor:pointer;transition:background .2s;}
+  .deploy-step-header:hover{background:rgba(124,58,237,.05);}
+  .deploy-step.open .deploy-step-header{background:rgba(124,58,237,.08);border-bottom:1px solid var(--border);}
+  .step-num{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:var(--bright);flex-shrink:0;}
+  .step-info{flex:1;}
+  .step-title{font-size:14px;font-weight:600;color:var(--bright);margin-bottom:2px;}
+  .step-sub{font-size:11px;color:var(--ghost);}
+  .step-time{font-family:'Space Mono',monospace;font-size:9px;padding:3px 8px;border-radius:4px;background:var(--card);color:var(--ghost);}
+  .step-chevron{color:var(--muted);transition:transform .2s;font-size:11px;}
+  .deploy-step.open .step-chevron{transform:rotate(180deg);}
+  .deploy-step-body{display:none;padding:18px;}
+  .deploy-step.open .deploy-step-body{display:block;}
+  .instruction-list{list-style:none;display:flex;flex-direction:column;gap:10px;}
+  .instruction-list li{display:flex;gap:12px;align-items:flex-start;}
+  .inst-num{font-family:'Space Mono',monospace;font-size:10px;color:var(--shard);background:rgba(167,139,250,.1);width:22px;height:22px;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+  .inst-text{font-size:12px;color:var(--text);line-height:1.6;}
+  .inst-text strong{color:var(--bright);}
+  .inst-text a{color:var(--orbit);text-decoration:none;}
+  .code-block{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-top:8px;font-family:'Space Mono',monospace;font-size:10px;color:var(--sol);line-height:1.8;overflow-x:auto;}
+  .tip-box{background:rgba(6,182,212,.06);border:1px solid rgba(6,182,212,.2);border-radius:8px;padding:12px 14px;margin-top:12px;font-size:11px;color:var(--ghost);line-height:1.6;}
+  .tip-box strong{color:var(--orbit);}
+  .warn-box{background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.2);border-radius:8px;padding:12px 14px;margin-top:12px;font-size:11px;color:var(--ghost);line-height:1.6;}
+  .warn-box strong{color:var(--sol);}
+  .cost-table{width:100%;border-collapse:collapse;font-size:11px;margin-top:14px;}
+  .cost-table th{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);padding:6px 10px;border-bottom:1px solid var(--border);text-align:left;}
+  .cost-table td{padding:8px 10px;border-bottom:1px solid rgba(42,31,74,.4);color:var(--text);vertical-align:top;}
+  .cost-table tr:last-child td{border-bottom:none;}
+  .free-tag{font-family:'Space Mono',monospace;font-size:8px;background:rgba(16,185,129,.12);color:var(--safe);padding:2px 5px;border-radius:3px;}
+
+  ::-webkit-scrollbar{width:5px;height:5px;}
+  ::-webkit-scrollbar-track{background:var(--void);}
+  ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="header-eyebrow">Complete Game Bible — v1.0 · Dr Manas Swain</div>
+    <h1>Cosmic Leap:<br><span>Starbound Odyssey</span></h1>
+    <div class="header-sub">Your full game design, architecture, monetisation, and deployment guide</div>
+    <div class="header-badges">
+      <span class="hbadge">3D PLATFORMER</span>
+      <span class="hbadge">1–4 PLAYERS ONLINE</span>
+      <span class="hbadge">TOKEN ECONOMY</span>
+      <span class="hbadge">UNITY 6</span>
+      <span class="hbadge">ORIGINAL IP</span>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('gdd',this)">📄 GDD Overview</button>
+    <button class="tab-btn" onclick="switchTab('levels',this)">🌌 Levels</button>
+    <button class="tab-btn" onclick="switchTab('characters',this)">🧑‍🚀 Characters</button>
+    <button class="tab-btn" onclick="switchTab('mono',this)">💎 Monetisation</button>
+    <button class="tab-btn" onclick="switchTab('tech',this)">⚙️ Tech Stack</button>
+    <button class="tab-btn" onclick="switchTab('deploy',this)">🚀 Deploy Guide</button>
+  </div>
+
+  <!-- =============================== GDD TAB =============================== -->
+  <div class="tab-content active" id="tab-gdd">
+    <div class="section-label">Game Design Document</div>
+    <div class="section-title">Project Overview</div>
+
+    <div class="gdd-cover">
+      <div class="gdd-logo">🌌</div>
+      <div class="gdd-title">Cosmic Leap</div>
+      <div class="gdd-subtitle">Starbound Odyssey</div>
+      <div class="gdd-tags">
+        <span class="gdd-tag">3D GRAVITY PLATFORMER</span>
+        <span class="gdd-tag">ONLINE CO-OP + PVP</span>
+        <span class="gdd-tag">FREE TO START</span>
+        <span class="gdd-tag">STAR SHARD ECONOMY</span>
+      </div>
+      <div class="gdd-grid">
+        <div class="gdd-stat"><div class="gdd-stat-val">7</div><div class="gdd-stat-label">Galaxy Worlds</div></div>
+        <div class="gdd-stat"><div class="gdd-stat-val">4</div><div class="gdd-stat-label">Playable Characters</div></div>
+        <div class="gdd-stat"><div class="gdd-stat-val">1–4</div><div class="gdd-stat-label">Players Online</div></div>
+        <div class="gdd-stat"><div class="gdd-stat-val">500</div><div class="gdd-stat-label">Free Starter Shards</div></div>
+        <div class="gdd-stat"><div class="gdd-stat-val">4</div><div class="gdd-stat-label">Game Modes</div></div>
+        <div class="gdd-stat"><div class="gdd-stat-val">$0</div><div class="gdd-stat-label">Cost to Start Playing</div></div>
+      </div>
+    </div>
+
+    <div class="highlight-box">
+      <div class="highlight-box-title">🎯 Elevator Pitch</div>
+      <p>Cosmic Leap is a 3D gravity-platformer where players leap between asteroid worlds with ever-changing gravity rules. Each of the 7 galaxy worlds introduces a new physics mechanic — from crystal low-gravity to ice frictionless surfaces. The final world combines all mechanics at once. Players earn Star Shards by winning, defeating others, and completing levels — and can spend them to continue, unlock skins, and revive. Solo, co-op, race, and arena modes keep gameplay fresh.</p>
+    </div>
+
+    <div class="divider"></div>
+    <div class="arch-title">Development Roadmap</div>
+    <div class="gdd-roadmap" id="roadmap"></div>
+
+    <div class="divider"></div>
+    <div class="arch-title">Game Modes</div>
+    <div class="flow-grid" id="modes-grid"></div>
+  </div>
+
+  <!-- =============================== LEVELS TAB =============================== -->
+  <div class="tab-content" id="tab-levels">
+    <div class="section-label">Level Design Document</div>
+    <div class="section-title">The 7 Aether Galaxies</div>
+    <div class="highlight-box">
+      <div class="highlight-box-title">🧭 Design Philosophy</div>
+      <p>Each galaxy introduces one core gravity mechanic that builds on the last. Difficulty scales by forcing players to combine mechanics from previous worlds. World 7 — The Core — reuses all prior mechanics simultaneously. Solo and co-op modes share the same geometry but unlock branching paths that require two players to access.</p>
+    </div>
+    <div class="galaxy-grid" id="galaxy-grid"></div>
+    <div class="progression-bar"><div class="progression-fill" id="prog-fill" style="width:0%"></div></div>
+    <div class="progression-label"><span>GALAXY 1 — INTRO</span><span id="prog-label">Tap a galaxy to explore</span><span>GALAXY 7 — FINAL</span></div>
+  </div>
+
+  <!-- =============================== CHARACTERS TAB =============================== -->
+  <div class="tab-content" id="tab-characters">
+    <div class="section-label">Character Roster</div>
+    <div class="section-title">Playable Characters & Ability Trees</div>
+    <div class="highlight-box">
+      <div class="highlight-box-title">🧑‍🚀 Character Philosophy</div>
+      <p>Each character has a base move set (jump, dash, grab) plus 4 unique abilities that unlock through the ability tree. Abilities cost Star Shards to unlock permanently. Characters are not pay-to-win — abilities change playstyle, not raw power. All abilities can be earned through gameplay without spending real money.</p>
+    </div>
+    <div class="char-grid" id="char-grid"></div>
+  </div>
+
+  <!-- =============================== MONETISATION TAB =============================== -->
+  <div class="tab-content" id="tab-mono">
+    <div class="section-label">Monetisation Design</div>
+    <div class="section-title">Star Shard Economy</div>
+    <div class="highlight-box">
+      <div class="highlight-box-title">💡 Economy Principle</div>
+      <p>Players start with 500 free Star Shards — enough to play for several sessions and experience the full game loop before spending anything. The economy rewards skill: good players can sustain indefinitely through shard earnings. Spending accelerates progress, not gates content. No pay-to-win: all purchases are cosmetic or convenience.</p>
+    </div>
+    <div class="arch-title">Shard Pack Pricing</div>
+    <div class="mono-grid" id="price-grid"></div>
+    <div class="arch-title">Earn & Spend Rates</div>
+    <table class="earn-table" id="earn-table">
+      <thead><tr><th>Action</th><th>Type</th><th>Shards</th><th>Notes</th></tr></thead>
+      <tbody id="earn-tbody"></tbody>
+    </table>
+    <div class="arch-title">Retention Funnel — Projected Conversion</div>
+    <div class="retention-bars" id="retention-bars"></div>
+    <div class="tip-box"><strong>📊 Industry Benchmark:</strong> Mobile F2P games average 2–5% paying users. If Cosmic Leap hits 10,000 players, 200–500 paying users at avg $5–10/month = $1,000–$5,000 AUD/month. Reaching this requires consistent new content drops every 6–8 weeks and active social media presence.</div>
+  </div>
+
+  <!-- =============================== TECH TAB =============================== -->
+  <div class="tab-content" id="tab-tech">
+    <div class="section-label">Technical Architecture</div>
+    <div class="section-title">Full Stack Breakdown</div>
+    <div class="highlight-box">
+      <div class="highlight-box-title">🏗️ Architecture Principle</div>
+      <p>Server-authoritative throughout. The client renders only — all game state, token transactions, match results, and anti-cheat run server-side. No client value is trusted without server confirmation. This prevents token cheating, speedhacking, and result manipulation.</p>
+    </div>
+    <div class="arch-section">
+      <div class="arch-title">System Stack — Layer by Layer</div>
+      <div class="stack-diagram" id="stack-diagram"></div>
+    </div>
+    <div class="arch-section">
+      <div class="arch-title">Critical Data Flows</div>
+      <div class="flow-grid" id="flow-grid"></div>
+    </div>
+    <div class="divider"></div>
+    <div class="arch-section">
+      <div class="arch-title">Technology Decisions</div>
+      <table class="spec-table"><thead><tr><th>Component</th><th>Choice</th><th>Why</th></tr></thead><tbody id="spec-tbody"></tbody></table>
+    </div>
+    <div class="arch-section">
+      <div class="arch-title">Multiplayer Netcode</div>
+      <div class="flow-grid" id="netcode-grid"></div>
+    </div>
+    <div class="highlight-box">
+      <div class="highlight-box-title">🔐 Anti-Cheat — 3 Layers</div>
+      <p><strong style="color:var(--text)">Client:</strong> Easy Anti-Cheat scans for memory injection and DLL hijacking. &nbsp;|&nbsp; <strong style="color:var(--text)">Network:</strong> Server rejects physics states violating velocity caps or teleport thresholds. &nbsp;|&nbsp; <strong style="color:var(--text)">Economy:</strong> All shard mutations are signed server transactions in an append-only ledger. Any unsigned client shard claim is silently discarded.</p>
+    </div>
+  </div>
+
+  <!-- =============================== DEPLOY TAB =============================== -->
+  <div class="tab-content" id="tab-deploy">
+    <div class="section-label">Deployment Guide</div>
+    <div class="section-title">How to Build & Launch — Step by Step</div>
+    <div class="highlight-box">
+      <div class="highlight-box-title">👋 You're New to Game Development — That's Perfectly Fine</div>
+      <p>This guide is written for you specifically. Every step explains what to do AND why you're doing it. Nothing is assumed. Each phase has a time estimate. You can hire freelancers for parts you can't do yourself — the architecture is designed so specialists can plug in without knowing the whole system. Start with Phase 1, don't skip ahead.</p>
+    </div>
+    <div id="deploy-steps"></div>
+    <div class="arch-title">Estimated Costs to Launch</div>
+    <table class="cost-table" id="cost-table">
+      <thead><tr><th>Item</th><th>What It Is</th><th>Cost (AUD/month)</th></tr></thead>
+      <tbody id="cost-tbody"></tbody>
+    </table>
+    <div class="warn-box"><strong>⚠️ Important for Your Pension:</strong> Before earning income from this game, speak with a Centrelink financial counsellor about how game revenue affects your DSP payments. Income thresholds apply. Earning through a registered ABN business (which you already have) is the correct structure.</div>
+  </div>
+
+</div>
+
+<script>
+// ===================== DATA =====================
+
+const galaxies = [
+  {num:'01',icon:'💎',iconBg:'rgba(6,182,212,.15)',name:'Crystal Crust',tagline:'Floating gemstone caverns — low gravity introduction',diff:1,diffLabel:'INTRO',
+   theme:'Low-gravity caverns carved through giant crystalline asteroids. Light refracts off gem walls, creating shifting spotlight mechanics.',
+   mechanic:'Reduced gravity (0.4G). Players float high and must time landings carefully. Introduces the Star Dash ability.',
+   mechanics:['Gem-wall reflection — light beams open locked doors','Slow fall: hold jump to glide short distances','Breakable crystal floors over void pits','Collect 5 Crystal Shards to unlock the boss arena'],
+   coopNote:'Player 2 holds a mirror platform steady while Player 1 rides across a chasm.',
+   boss:{icon:'🦂',name:'Prism Warden',desc:'A scorpion-like creature encased in reflective crystal armour. Fires light beams that bounce off walls. Players must reflect beams back using collected gem shards.',weakness:'WEAKNESS → Reflect 3 beams simultaneously (requires co-op in 2P mode)'},
+   shards:'+60 first clear · +15 repeat'},
+  {num:'02',icon:'🌸',iconBg:'rgba(16,185,129,.15)',name:'Nebula Gardens',tagline:'Pollen-filled zero-G meadows',diff:1,diffLabel:'EASY',
+   theme:'Zero-gravity biome filled with giant luminescent flora. Pollen clouds obscure vision temporarily. Players traverse by leaping between drifting plant platforms.',
+   mechanic:'Zero-G drift. Players bounce between floating root clusters. Luna\'s Gravity Flip is introduced as a pickup here.',
+   mechanics:['Pollen fog — 4-second vision reduction zones','Root trampolines: bouncy launch pads at fixed angles','Seed pods: throwable to create temporary platforms','Wind currents: directional force fields pushing the player'],
+   coopNote:'One player fans pollen away (hold position) while the other navigates a blind corridor.',
+   boss:{icon:'🌿',name:'Thornveil the Ancient',desc:'A massive sentient plant whose vines extend across the arena. Vines retract only when players land on specific glowing root nodes in sequence — musical memory game.',weakness:'WEAKNESS → Step nodes in correct sequence; randomises each attempt'},
+   shards:'+75 first clear · +20 repeat'},
+  {num:'03',icon:'⚙️',iconBg:'rgba(255,107,53,.15)',name:'Iron Halo',tagline:'Industrial wreckage rings — magnetic gravity',diff:2,diffLabel:'MEDIUM',
+   theme:'Broken orbital station debris spinning in rings around a dead planet. Gravity direction changes based on which metal surface the player is closest to.',
+   mechanic:'Magnetic surface gravity — players stick to any metallic surface, enabling wall-walking and ceiling traversal.',
+   mechanics:['Surface gravity snap: run on walls and ceilings seamlessly','Magnetic repulsion zones: red rings launch players off surface','Rotating debris platforms: timing-based traversal','Magnetic bombs: attract or repel nearby objects'],
+   coopNote:'Player 1 holds a rotating gear segment still while Player 2 crosses it.',
+   boss:{icon:'🤖',name:'Constructor ΣGMA',desc:'A massive assembler robot that builds new arena hazards mid-fight from surrounding debris. Players must use magnetic bombs to dismantle its armour before the core is exposed.',weakness:'WEAKNESS → Destroy 4 limbs within 30s; they regenerate if not all destroyed in time'},
+   shards:'+90 first clear · +25 repeat'},
+  {num:'04',icon:'🔊',iconBg:'rgba(245,158,11,.15)',name:'Echo Void',tagline:'Sound-based puzzle dimensions',diff:2,diffLabel:'MEDIUM',
+   theme:'A dimension where visibility is zero — players navigate by sound pulses emitted when they move. Platforms only become visible when struck by sound waves.',
+   mechanic:'Echolocation-based navigation. Jumping creates a pulse that briefly illuminates nearby platforms. Loud enemies track by sound.',
+   mechanics:['Sound pulse radius: larger jumps = larger reveal circle','Silent zones: no pulses allowed — must memorise layout','Echo enemies: hone in on any sound within 5 seconds','Resonance bridges: stand still long enough to materialise'],
+   coopNote:'One player draws enemy attention while the other navigates the silent corridor to the exit switch.',
+   boss:{icon:'👁️',name:'The Hollow Ear',desc:'An invisible floating eye-creature that localises players by sound. Must be lured into silent resonance traps — materialises briefly when hit, allowing attacks.',weakness:'WEAKNESS → Lure into 3 resonance traps without making a jump sound within 2m'},
+   shards:'+110 first clear · +30 repeat'},
+  {num:'05',icon:'🌋',iconBg:'rgba(239,68,68,.15)',name:'Ember Drift',tagline:'Volcanic asteroid fields — thermal gravity',diff:3,diffLabel:'HARD',
+   theme:'Active volcanic asteroids in collision orbit. Heat thermals create updrafts and downdrafts. Lava flows reset gravity direction unpredictably.',
+   mechanic:'Thermal convection gravity — rising hot air creates local upward gravity zones. Players must read thermal currents.',
+   mechanics:['Thermal columns: upward gravity for 3 seconds before dispersing','Lava tide: periodic floor-fill event requiring vertical escape','Cooling vents: freeze mid-air for 2s to reposition','Combines Crystal Crust low-G with Iron Halo wall-walk'],
+   coopNote:'Player 1 activates cooling vents to freeze platforms while Player 2 sprints across hot sections.',
+   boss:{icon:'🐲',name:'Magmavore Rex',desc:'A lava-encased dragon that splits the arena with fire breath. Thermal updrafts from its wings must be ridden to reach attack windows on its back.',weakness:'WEAKNESS → Hit dorsal fin 3× using thermal ride; each hit resets thermal pattern'},
+   shards:'+130 first clear · +35 repeat'},
+  {num:'06',icon:'❄️',iconBg:'rgba(6,182,212,.1)',name:'Frost Orbit',tagline:'Frozen comet trails — ice physics',diff:3,diffLabel:'HARD',
+   theme:'Comet trail frozen in time — a long chain of ice asteroids with near-zero friction. All previous mechanics apply but movement control is drastically reduced.',
+   mechanic:'Frictionless ice surfaces combined with gravitational slingshot nodes. Players build speed and use terrain to redirect momentum.',
+   mechanics:['Ice momentum: no deceleration without a jump cancel','Slingshot nodes: orbital momentum points for rapid traversal','Combines ALL prior mechanics in specific puzzle rooms','Blizzard events: forced movement direction for 8s intervals'],
+   coopNote:'Players must maintain contact momentum — if one stops, the other gets pulled back. Requires synchronised movement.',
+   boss:{icon:'🌀',name:'Glacius the Eternal',desc:'A colossal ice elemental that permanently freezes sections of the arena after each hit. The arena shrinks with each phase. Final phase: a single pillar requiring perfect momentum management.',weakness:'WEAKNESS → Hit core while sliding (not standing); requires ice momentum builds'},
+   shards:'+150 first clear · +40 repeat'},
+  {num:'07',icon:'⭐',iconBg:'rgba(167,139,250,.15)',name:'The Core',tagline:'Final singularity — all mechanics converge',diff:3,diffLabel:'FINAL',
+   theme:'The neutron star\'s collapsing core. Gravity warps radially. All 6 prior galaxy mechanics appear in rotating 90-second segments.',
+   mechanic:'Rotating gravity axis — gravity direction shifts 90° every 90 seconds, announced 10 seconds early. Players must constantly reorient.',
+   mechanics:['Phase 1: Crystal low-G · Phase 2: Nebula zero-G','Phase 3: Iron Halo wall-walk · Phase 4: Echo Void dark','Phase 5: Ember thermal · Phase 6: Frost ice — then loops','Each phase lasts 90s; boss attack pattern also rotates'],
+   coopNote:'Co-op exclusive secret ending: both players reach the inner core simultaneously by splitting to opposite sides during the final gravity rotation.',
+   boss:{icon:'🌑',name:'The Null Sovereign',desc:'The collapsed consciousness of the neutron star. Manifests as a void sphere that mirrors the player\'s last 5 seconds of movement back at them as a hazard clone. Rotates attack patterns with gravity shifts.',weakness:'WEAKNESS → Bait the clone into a surface it cannot follow you onto after each gravity shift'},
+   shards:'+300 first clear · +80 repeat · 🏆 Sovereign Crown cosmetic'},
+];
+
+const characters = [
+  {name:'Nova',icon:'🔥',role:'Protagonist — Balanced',roleColor:'var(--nova)',
+   avatarBg:'rgba(255,107,53,.15)',borderColor:'var(--nova)',
+   stats:{Speed:75,Power:70,Jump:65,Defence:60},
+   abilities:[
+     {name:'Star Dash',level:'BASE',cost:'Free',desc:'Burst forward with invincibility for 0.8s. Unlocked from start.',color:'var(--nova)'},
+     {name:'Nova Flare',level:'LVL 2',cost:'200 ⟡',desc:'Release a radial burst that staggers nearby enemies and players. 8s cooldown.',color:'var(--nova)'},
+     {name:'Afterburn',level:'LVL 4',cost:'400 ⟡',desc:'Star Dash leaves a fire trail for 2s that damages anyone who crosses it.',color:'var(--nova)'},
+     {name:'Supernova',level:'LVL 6',cost:'800 ⟡',desc:'Ultimate: massive explosion centred on Nova. 30s cooldown. Clears entire screen.',color:'var(--nova)'},
+   ]},
+  {name:'Luna',icon:'🌙',role:'Support — Gravity Specialist',roleColor:'var(--shard)',
+   avatarBg:'rgba(124,58,237,.15)',borderColor:'var(--shard)',
+   stats:{Speed:60,Power:55,Jump:90,Defence:55},
+   abilities:[
+     {name:'Gravity Flip',level:'BASE',cost:'Free',desc:'Reverse local gravity for 2s. Luna floats to ceiling-as-floor. Unlocked from start.',color:'var(--shard)'},
+     {name:'Orbit Pull',level:'LVL 2',cost:'200 ⟡',desc:'Pull one nearby enemy or player toward Luna. Useful for cliff-edging opponents.',color:'var(--shard)'},
+     {name:'Zero Zone',level:'LVL 4',cost:'400 ⟡',desc:'Create a zero-gravity bubble (3m radius) lasting 5s. Allies float; enemies disorient.',color:'var(--shard)'},
+     {name:'Singularity',level:'LVL 6',cost:'800 ⟡',desc:'Ultimate: massive gravity well pulls ALL players and objects to one point for 3s.',color:'var(--shard)'},
+   ]},
+  {name:'Sol',icon:'☀️',role:'Rival — Long Range Aggressor',roleColor:'var(--sol)',
+   avatarBg:'rgba(245,158,11,.15)',borderColor:'var(--sol)',
+   stats:{Speed:65,Power:90,Jump:60,Defence:50},
+   abilities:[
+     {name:'Solar Blast',level:'BASE',cost:'Free',desc:'Ranged stun projectile. Travels 8m, stuns target for 1.2s. Unlocked from start.',color:'var(--sol)'},
+     {name:'Sunspot',level:'LVL 2',cost:'200 ⟡',desc:'Drop a burning zone (4m radius) that persists for 4s. Blocks enemy paths.',color:'var(--sol)'},
+     {name:'Corona Rush',level:'LVL 4',cost:'400 ⟡',desc:'Charge in a straight line dealing damage. Goes through walls in Iron Halo worlds.',color:'var(--sol)'},
+     {name:'Solar Storm',level:'LVL 6',cost:'800 ⟡',desc:'Ultimate: rapid-fire 12 Solar Blasts in all directions. 25s cooldown.',color:'var(--sol)'},
+   ]},
+  {name:'Orbit',icon:'💫',role:'Secret Unlock — Trickster',roleColor:'var(--orbit)',
+   avatarBg:'rgba(6,182,212,.15)',borderColor:'var(--orbit)',
+   stats:{Speed:85,Power:50,Jump:80,Defence:40},
+   abilities:[
+     {name:'Phase Shift',level:'BASE',cost:'Unlock: 2000 ⟡',desc:'Walk through solid objects for 1.5s. Walls, platforms, and hazards become passable.',color:'var(--orbit)'},
+     {name:'Echo Step',level:'LVL 2',cost:'300 ⟡',desc:'Leave a decoy afterimage that lasts 2s and draws enemy AI attention.',color:'var(--orbit)'},
+     {name:'Dimension Hop',level:'LVL 4',cost:'600 ⟡',desc:'Teleport to cursor position up to 6m away. Instant, no windup.',color:'var(--orbit)'},
+     {name:'Ghost Protocol',level:'LVL 6',cost:'1200 ⟡',desc:'Ultimate: become fully invisible and intangible for 6s. Cannot attack but cannot be hit.',color:'var(--orbit)'},
+   ]},
+];
+
+const packs = [
+  {name:'Spark',price:'$0.99',period:'one-time',shards:'1,200',bonus:null,featured:false},
+  {name:'Glow',price:'$4.99',period:'one-time',shards:'7,500',bonus:'+25% bonus',featured:false},
+  {name:'Radiance',price:'$9.99',period:'one-time',shards:'20,000',bonus:'+60% bonus',featured:true},
+  {name:'Supernova',price:'$19.99',period:'one-time',shards:'55,000',bonus:'+120% bonus',featured:false},
+  {name:'Monthly Pass',price:'$4.99',period:'per month',shards:'2,000/day',bonus:'+ exclusive skins',featured:false},
+];
+
+const earnRows = [
+  {action:'New player welcome bonus',type:'earn',shards:'+500',notes:'One-time, credited on account creation'},
+  {action:'Complete a Star Run level (first time)',type:'earn',shards:'+15–60',notes:'Scales with galaxy difficulty'},
+  {action:'Win a Cosmic Race',type:'earn',shards:'+40',notes:'Based on final position; 1st gets most'},
+  {action:'Defeat a player in Arena Clash',type:'earn',shards:'+30',notes:'Capped at +150/day to prevent farming'},
+  {action:'Complete Co-op Constellation (team)',type:'earn',shards:'+25 each',notes:'All team members rewarded equally'},
+  {action:'Daily login streak (7-day)',type:'earn',shards:'+100',notes:'Bonus on 7th consecutive day'},
+  {action:'Boss first-time defeat',type:'earn',shards:'+50–300',notes:'Each boss, one-time bonus only'},
+  {action:'Continue after falling (revive)',type:'spend',shards:'-50',notes:'Increases by 25 each subsequent revive per session'},
+  {action:'Unlock character skin',type:'spend',shards:'-200 to -500',notes:'Cosmetic only, no gameplay advantage'},
+  {action:'Unlock ability (Lvl 2)',type:'spend',shards:'-200',notes:'Permanent unlock per character'},
+  {action:'Unlock ability (Lvl 4)',type:'spend',shards:'-400',notes:'Permanent unlock per character'},
+  {action:'Unlock ability (Lvl 6 Ultimate)',type:'spend',shards:'-800',notes:'Permanent unlock per character'},
+  {action:'Unlock Orbit (secret character)',type:'spend',shards:'-2,000',notes:'Or complete the secret co-op ending in The Core'},
+  {action:'Purchase Spark Pack',type:'buy',shards:'+1,200',notes:'$0.99 AUD via Stripe / IAP'},
+  {action:'Purchase Radiance Pack',type:'buy',shards:'+20,000',notes:'$9.99 AUD — most popular tier'},
+];
+
+const retentionData = [
+  {label:'New players',pct:100,color:'var(--shard)'},
+  {label:'Session 2 (Day 1)',pct:65,color:'var(--orbit)'},
+  {label:'Day 7',pct:35,color:'var(--sol)'},
+  {label:'Day 30',pct:18,color:'var(--nova)'},
+  {label:'Paying users',pct:4,color:'var(--safe)'},
+];
+
+const roadmap = [
+  {phase:'PHASE 1',title:'Pre-Production (Months 1–2)',color:'var(--shard)',items:'Hire 2D concept artist (Fiverr/Upwork) · Finalise GDD · Choose Unity 6 · Set up GitHub repository · Create Jira board for task tracking'},
+  {phase:'PHASE 2',title:'Prototype (Months 3–4)',color:'var(--orbit)',items:'Build Galaxy 1 (Crystal Crust) only · Implement basic gravity system · Add Nova character with Star Dash · No multiplayer yet · Playtest yourself daily'},
+  {phase:'PHASE 3',title:'Vertical Slice (Months 5–7)',color:'var(--sol)',items:'Complete Galaxies 1–3 · Add Luna character · Basic 2-player local co-op · Add Photon networking for online play · Implement Star Shard economy · Alpha playtest with 5–10 friends'},
+  {phase:'PHASE 4',title:'Beta (Months 8–11)',color:'var(--nova)',items:'Complete all 7 galaxies · All 4 characters + abilities · Stripe + Apple/Google IAP · Firebase Auth · Easy Anti-Cheat · Public beta on itch.io (free)'},
+  {phase:'PHASE 5',title:'Launch (Month 12)',color:'var(--safe)',items:'Steam page live (120 USD one-time fee) · Google Play + App Store submissions · Press kit + trailer · Launch on social media · Monitor crash reports + fix within 48h'},
+];
+
+const gameModes = [
+  {icon:'🌟',title:'Star Run',desc:'Solo or co-op campaign. Progress through all 7 galaxies. Main story mode — recommended for new players. Unlocks characters and abilities.'},
+  {icon:'🏁',title:'Cosmic Race',desc:'2–4 players compete to complete a level fastest. Power-ups spawn mid-race. Leaderboard tracked globally. Daily race rewards bonus shards.'},
+  {icon:'⚔️',title:'Arena Clash',desc:'PvP combat on spherical battlefields. Knock opponents off the edge using abilities. 2–4 players. Ranked mode with seasonal rewards.'},
+  {icon:'🤝',title:'Co-op Constellation',desc:'Team puzzles requiring combined abilities. Secret routes hidden throughout. Some puzzles are physically impossible solo. Exclusive co-op cosmetics.'},
+];
+
+const stackLayers = [
+  {label:'CLIENT',blocks:[
+    {name:'Windows / macOS / Linux',tech:'Unity 6 · C#',cls:'lb-client',icon:'🖥️'},
+    {name:'iOS / Android',tech:'Unity Mobile · IL2CPP',cls:'lb-client',icon:'📱'},
+  ],arrow:'HTTPS · WebSocket · UDP'},
+  {label:'ENGINE',blocks:[
+    {name:'Rendering + Physics',tech:'Unity 6 HDRP · PhysX',cls:'lb-engine',icon:'🎮'},
+    {name:'Input + Audio',tech:'Unity Input System · FMOD',cls:'lb-engine',icon:'🎵'},
+    {name:'UI Framework',tech:'Unity UI Toolkit',cls:'lb-engine',icon:'🖼️'},
+  ],arrow:'Photon Fusion 2 SDK'},
+  {label:'NETWORK',blocks:[
+    {name:'Multiplayer Relay',tech:'Photon Fusion 2 · Rollback',cls:'lb-network',icon:'🔄'},
+    {name:'Matchmaking',tech:'PlayFab Matchmaking',cls:'lb-network',icon:'🔍'},
+    {name:'Voice Chat',tech:'Photon Voice 2 · Opus',cls:'lb-network',icon:'🎙️'},
+  ],arrow:'REST API · JWT Auth'},
+  {label:'BACKEND',blocks:[
+    {name:'Game Server',tech:'Node.js · Azure GameLift',cls:'lb-backend',icon:'⚙️'},
+    {name:'Auth Service',tech:'Firebase Auth · JWT',cls:'lb-backend',icon:'🔑'},
+    {name:'Payment Service',tech:'Stripe · Apple/Google IAP',cls:'lb-backend',icon:'💳'},
+    {name:'Token Ledger',tech:'Append-only · Signed Tx',cls:'lb-backend',icon:'📒'},
+  ],arrow:'SQL · NoSQL'},
+  {label:'DATA',blocks:[
+    {name:'Player Database',tech:'Firebase Firestore',cls:'lb-data',icon:'🗄️'},
+    {name:'Match History',tech:'PostgreSQL · TimescaleDB',cls:'lb-data',icon:'📊'},
+    {name:'Asset CDN',tech:'Azure Blob + CDN',cls:'lb-data',icon:'☁️'},
+  ],arrow:'EAC · Server Validation'},
+  {label:'SECURITY',blocks:[
+    {name:'Client Anti-Cheat',tech:'Easy Anti-Cheat (EAC)',cls:'lb-security',icon:'🛡️'},
+    {name:'Server Validation',tech:'Physics state checks',cls:'lb-security',icon:'✅'},
+    {name:'Economy Guard',tech:'Signed tx ledger',cls:'lb-security',icon:'🔒'},
+  ],arrow:null},
+];
+
+const flows = [
+  {icon:'🔐',title:'Player Auth Flow',steps:['Client sends Firebase Auth token','Backend validates token signature','Session JWT issued (15min expiry)','JWT attached to all API requests','Refresh token stored client-side only']},
+  {icon:'💎',title:'Star Shard Transaction',steps:['Game event fires (level clear, kill)','Server calculates reward server-side','Signed transaction written to ledger','Client balance updated via push event','Any unsigned client claim discarded']},
+  {icon:'🎮',title:'Multiplayer Session',steps:['Host requests room from Photon Fusion','PlayFab assigns region-optimal server','All players connect to relay room','Server ticks at 60Hz authoritative state','Client predicts locally, corrects on mismatch']},
+  {icon:'💳',title:'Shard Pack Purchase',steps:['Player selects pack in-game store','Stripe checkout session created server-side','Player completes payment (Stripe/IAP)','Webhook confirms payment to backend','Shards credited via signed ledger tx']},
+];
+
+const netcodeCards = [
+  {icon:'🔄',title:'Rollback Netcode',steps:['Each client simulates physics locally','Server broadcasts authoritative tick','Client compares predicted vs server state','Mismatch triggers local rollback + resim','Smoothed interpolation hides correction']},
+  {icon:'📡',title:'Lag Compensation',steps:['Server timestamps every input packet','Player position rewound to input timestamp','Hit detection run on rewound state','Result broadcast to all players','Visual effect played at current position']},
+  {icon:'🌐',title:'Region Routing',steps:['Client pings 6 Photon regions on launch','Lowest-latency region selected automatically','Room created in that region','Late joiners routed to same region room','Cross-region fallback if room full (<150ms)']},
+];
+
+const specs = [
+  {comp:'Game Engine',choice:'Unity 6 (HDRP)',why:'Best 3D gravity platformer tooling; Cinemachine for orbital cameras; huge free asset store'},
+  {comp:'Multiplayer',choice:'Photon Fusion 2',why:'Rollback netcode built-in; server-authoritative mode; global relay infrastructure'},
+  {comp:'Auth',choice:'Firebase Auth + JWT',why:'Free tier covers millions of users; Google/Apple SSO; tokens are industry standard'},
+  {comp:'Backend',choice:'Node.js + Azure',why:'Azure GameLift for dedicated game servers; scales automatically with player count'},
+  {comp:'Database',choice:'Firestore + PostgreSQL',why:'Firestore for real-time player data; PostgreSQL + TimescaleDB for match history analytics'},
+  {comp:'Payments',choice:'Stripe + Apple/Google IAP',why:'Stripe for desktop; platform-mandated IAP for mobile; webhooks trigger server-side shard credit'},
+  {comp:'Anti-Cheat',choice:'Easy Anti-Cheat (EAC)',why:'Free for indie developers; Epic-maintained; protects against injection, memory editing'},
+  {comp:'Voice Chat',choice:'Photon Voice 2',why:'Bundled with Photon; Opus codec; 3D positional audio supported natively'},
+  {comp:'CI/CD',choice:'GitHub Actions + Unity Cloud',why:'Automated builds for all platforms; Unity Cloud Build handles mobile signing'},
+];
+
+const deploySteps = [
+  {num:'1',color:'var(--shard)',title:'Learn Unity Basics First',sub:'Before building your game — 2 weeks of free training',time:'2 WEEKS',
+   instructions:[
+     {text:'<strong>Download Unity Hub for free</strong> at <a href="https://unity.com/download">unity.com/download</a>. This is the launcher that manages all your Unity versions.'},
+     {text:'<strong>Install Unity 6</strong> (the latest version) through Unity Hub. Choose the "Personal" plan — it is completely free for indie developers earning under $100K USD/year.'},
+     {text:'<strong>Complete the free Unity Learn course</strong> "Unity Essentials" at <a href="https://learn.unity.com">learn.unity.com</a>. It takes about 10 hours and teaches you how Unity projects work.'},
+     {text:'<strong>Then do "3D Game Kit"</strong> — a free Unity Learn project that shows you how 3D platformers are built. This is the closest thing to Cosmic Leap they have.'},
+   ],
+   tip:'Unity is the industry standard for mobile and indie 3D games. Millions of tutorials exist on YouTube. Search "Unity 3D platformer tutorial 2024" to find free guides.',
+   warn:null},
+
+  {num:'2',color:'var(--orbit)',title:'Hire a Unity Developer (Freelancer)',sub:'You don\'t need to code this yourself',time:'1–2 MONTHS',
+   instructions:[
+     {text:'<strong>Post a job on Upwork.com</strong> with this exact title: "Unity 6 3D Gravity Platformer Developer — Indie Game Prototype". Budget: $500–$2,000 AUD for a prototype of Galaxy 1 only.'},
+     {text:'<strong>What to ask them to build first:</strong> One playable level (Crystal Crust), one character (Nova) with jump and dash, basic gravity system, and a main menu. Nothing else yet.'},
+     {text:'<strong>Also post on Fiverr.com</strong> for 2D concept art. Search "game character concept art" — expect $30–$80 AUD per character sheet showing Nova from multiple angles.'},
+     {text:'<strong>Set up a GitHub account</strong> at github.com (free). Ask your developer to put all code there. This means you own the code and can hire a different developer later if needed.'},
+     {text:'<strong>Pay developers in milestones</strong> — never pay 100% upfront. Use Upwork\'s built-in milestone system which holds payment until work is delivered and approved.'},
+   ],
+   tip:'You are the game director. Your job is to make decisions about how the game looks, feels, and works. The developer\'s job is to implement your decisions. You do not need to write code.',
+   warn:'Avoid developers who ask for full payment upfront, cannot show previous Unity projects, or promise to build everything in 2 weeks. Good work takes time.'},
+
+  {num:'3',color:'var(--sol)',title:'Set Up Your Accounts (Services)',sub:'All free tiers until you have players',time:'1 DAY',
+   instructions:[
+     {text:'<strong>Firebase (Google) — free:</strong> Go to <a href="https://firebase.google.com">firebase.google.com</a>, sign in with Google, create a new project called "cosmic-leap". This handles player accounts and saves.'},
+     {text:'<strong>Photon Engine — free tier:</strong> Sign up at <a href="https://www.photonengine.com">photonengine.com</a>. Create a Fusion app. The free tier supports 20 concurrent users — plenty for testing.'},
+     {text:'<strong>Stripe — free to set up:</strong> Go to <a href="https://stripe.com/au">stripe.com/au</a> and create an account with your ABN (76 947 108 181). Stripe takes 1.7% + 30¢ per transaction in Australia.'},
+     {text:'<strong>GitHub — free:</strong> Create your repository at github.com. Share access with your developer. All game code lives here.'},
+     {text:'<strong>PlayFab — free tier:</strong> Sign up at <a href="https://playfab.com">playfab.com</a>. This handles matchmaking (connecting players together for multiplayer).'},
+   ],
+   tip:'Write down all your account login details in a secure password manager (Bitwarden is free). You will need these accounts for years.',
+   warn:null},
+
+  {num:'4',color:'var(--nova)',title:'Build the Star Shard Backend',sub:'The token economy — needs a backend developer',time:'3–4 WEEKS',
+   instructions:[
+     {text:'<strong>Post a second Upwork job</strong>: "Node.js + Firebase backend developer — game economy API". Budget: $300–$800 AUD. They need to build the shard transaction system.'},
+     {text:'<strong>Give them this spec:</strong> Player balance stored in Firestore. All shard changes must go through a server-side API endpoint (never trust the client). Every transaction logged with player ID, amount, reason, and timestamp.'},
+     {text:'<strong>Stripe integration:</strong> When a player buys a shard pack, Stripe sends a webhook to your server confirming payment. Only then does the server add shards. This prevents fraud.'},
+     {text:'<strong>Test thoroughly:</strong> Have the developer show you that shards cannot be added by editing values in the browser. If a player can hack their shard balance, your economy breaks.'},
+   ],
+   tip:'This is the most important part to get right. A broken token economy can destroy trust in your game overnight. Test it with real small payments ($0.99) before launch.',
+   warn:null},
+
+  {num:'5',color:'var(--shard)',title:'Alpha Test — Close Friends Only',sub:'Find all the breaking bugs before strangers do',time:'4 WEEKS',
+   instructions:[
+     {text:'<strong>Build a Windows .exe version</strong> of the prototype (Unity can do this with 3 clicks: File → Build Settings → Windows → Build). Share privately via Google Drive.'},
+     {text:'<strong>Recruit 5–10 testers</strong> — friends, family, or post in the Aussi-Nexus Discord if you have one. Give each of them 500 free shards to test the economy.'},
+     {text:'<strong>Watch them play without helping.</strong> Sit next to them or watch via screen share. Every time they get confused, write it down. Do not explain — note what confused them.'},
+     {text:'<strong>Collect bugs in a spreadsheet:</strong> Date, what happened, what was expected, how to reproduce it. Send this to your developer weekly as a priority list.'},
+   ],
+   tip:'Alpha is about finding catastrophic bugs — crashes, lost data, broken purchases. Do not worry about small visual issues yet.',
+   warn:'Never give testers real money payment options during alpha. Use test mode in Stripe (there are fake card numbers provided by Stripe for testing).'},
+
+  {num:'6',color:'var(--orbit)',title:'Launch on itch.io (Free Beta)',sub:'Real players, free, low pressure',time:'1 WEEK',
+   instructions:[
+     {text:'<strong>Create an account on itch.io</strong> (free game publishing platform). Many indie games launch here first. Upload your Windows build as a free beta.'},
+     {text:'<strong>Write a clear description:</strong> What the game is, that it is a beta, that you want feedback, and how to report bugs (email or Discord). Include screenshots.'},
+     {text:'<strong>Post in Reddit communities:</strong> r/indiegaming, r/Unity3D, r/gamedev. Title: "I made a 3D gravity platformer — free beta, looking for feedback". Be honest that you are new.'},
+     {text:'<strong>Set up a free Discord server</strong> for Cosmic Leap. Post the itch.io link there. Use Discord as your bug report channel and community hub.'},
+   ],
+   tip:'itch.io is the friendliest community for indie games. Players there expect rough edges and are often surprisingly helpful with bug reports.',
+   warn:null},
+
+  {num:'7',color:'var(--sol)',title:'Submit to Steam, Google Play & App Store',sub:'The real launch — takes 1–4 weeks per platform',time:'4–6 WEEKS',
+   instructions:[
+     {text:'<strong>Steam (PC):</strong> Pay the one-time $120 USD Steamworks fee at <a href="https://store.steampowered.com/steamdirect">store.steampowered.com/steamdirect</a>. Submit your game for review. Valve takes 30% of sales.'},
+     {text:'<strong>Google Play (Android):</strong> Pay the one-time $35 USD registration fee at <a href="https://play.google.com/console">play.google.com/console</a>. Google takes 15% on first $1M USD/year for small developers.'},
+     {text:'<strong>Apple App Store (iOS):</strong> Pay $149 AUD/year for an Apple Developer account at <a href="https://developer.apple.com">developer.apple.com</a>. Apple takes 15% (small developer program). Review takes 1–3 business days.'},
+     {text:'<strong>Create a press kit:</strong> Screenshots (at least 5, 1920×1080), a 90-second gameplay trailer (record with OBS — free), your game\'s description, and your contact email.'},
+     {text:'<strong>Localise the store description</strong> into at least English (Australian), US English, and consider simple Spanish — it is the second largest gaming market.'},
+   ],
+   tip:'The trailer is the most important marketing tool. Show actual gameplay in the first 5 seconds. Hire a video editor on Fiverr for $50–$100 if needed.',
+   warn:'Apple reviews are strict. Common rejection reasons: crashes on launch, broken IAP, misleading screenshots. Test on a real iPhone before submitting.'},
+];
+
+const costRows = [
+  {item:'Unity 6',what:'Game engine (Personal plan)',cost:'FREE',free:true},
+  {item:'Firebase',what:'Auth + database (Spark plan)',cost:'FREE up to ~50K users',free:true},
+  {item:'Photon Fusion',what:'Multiplayer (free tier)',cost:'FREE up to 20 CCU',free:true},
+  {item:'PlayFab',what:'Matchmaking (free tier)',cost:'FREE up to 1,000 MAU',free:true},
+  {item:'GitHub',what:'Code repository',cost:'FREE',free:true},
+  {item:'itch.io',what:'Beta distribution',cost:'FREE (optional revenue share)',free:true},
+  {item:'Stripe',what:'Payments',cost:'1.7% + $0.30 per transaction',free:false},
+  {item:'Steam',what:'PC store listing',cost:'$120 USD one-time',free:false},
+  {item:'Google Play',what:'Android store',cost:'$35 USD one-time',free:false},
+  {item:'Apple Developer',what:'iOS store access',cost:'$149 AUD/year',free:false},
+  {item:'Unity developer',what:'Freelancer — prototype',cost:'$500–$2,000 AUD',free:false},
+  {item:'Backend developer',what:'Freelancer — economy API',cost:'$300–$800 AUD',free:false},
+  {item:'Concept artist',what:'Freelancer — 4 characters',cost:'$120–$320 AUD',free:false},
+  {item:'Azure (optional)',what:'Game server hosting at scale',cost:'~$50–200 AUD/month at launch',free:false},
+];
+
+// ===================== RENDER FUNCTIONS =====================
+
+function renderGalaxies(){
+  const grid=document.getElementById('galaxy-grid');
+  galaxies.forEach((g,i)=>{
+    const card=document.createElement('div');
+    card.className='galaxy-card';card.id='galaxy-'+i;
+    card.innerHTML=`
+      <div class="galaxy-header" onclick="toggleGalaxy(${i})">
+        <div class="galaxy-num">${g.num}</div>
+        <div class="galaxy-icon" style="background:${g.iconBg}">${g.icon}</div>
+        <div class="galaxy-info"><div class="galaxy-name">${g.name}</div><div class="galaxy-tagline">${g.tagline}</div></div>
+        <div class="galaxy-meta"><span class="diff-badge diff-${g.diff}">${g.diffLabel}</span><span class="shard-reward">💎 ${g.shards.split('·')[0].trim()}</span></div>
+        <div class="chevron">▼</div>
+      </div>
+      <div class="galaxy-body">
+        <div class="galaxy-body-inner">
+          <div><div class="detail-label">World Theme</div><div class="detail-text">${g.theme}</div></div>
+          <div><div class="detail-label">Core Mechanic</div><div class="detail-text">${g.mechanic}</div></div>
+          <div><div class="detail-label">Level Gimmicks</div><ul class="mechanic-list">${g.mechanics.map(m=>`<li>${m}</li>`).join('')}</ul></div>
+          <div><div class="detail-label">Co-op Exclusive Path</div><div class="detail-text">${g.coopNote}</div></div>
+          <div class="boss-block">
+            <div class="boss-icon">${g.boss.icon}</div>
+            <div class="boss-info"><div class="boss-name">⚔️ Boss: ${g.boss.name}</div><div class="boss-desc">${g.boss.desc}</div><div class="boss-weakness">${g.boss.weakness}</div></div>
+            <div><span class="shard-reward">💎 ${g.shards}</span></div>
+          </div>
+        </div>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+
+function toggleGalaxy(i){
+  const card=document.getElementById('galaxy-'+i);
+  const was=card.classList.contains('expanded');
+  document.querySelectorAll('.galaxy-card').forEach(c=>c.classList.remove('expanded'));
+  if(!was){card.classList.add('expanded');document.getElementById('prog-fill').style.width=((i+1)/galaxies.length*100)+'%';document.getElementById('prog-label').textContent='Galaxy '+(i+1)+' of 7';}
+  else{document.getElementById('prog-fill').style.width='0%';document.getElementById('prog-label').textContent='Tap a galaxy to explore';}
+}
+
+function renderCharacters(){
+  const grid=document.getElementById('char-grid');
+  characters.forEach(c=>{
+    const card=document.createElement('div');
+    card.className='char-card';
+    card.style.borderColor=c.borderColor;
+    const statsHtml=Object.entries(c.stats).map(([k,v])=>`
+      <div class="stat-item">
+        <div class="stat-name">${k}</div>
+        <div class="stat-bar"><div class="stat-fill" style="width:${v}%;background:${c.roleColor}"></div></div>
+      </div>`).join('');
+    const abilitiesHtml=c.abilities.map(a=>`
+      <div class="ability-item" style="border-left-color:${a.color}">
+        <div class="ability-name">${a.name} <div style="display:flex;gap:4px"><span class="ability-level">${a.level}</span></div></div>
+        <div class="ability-desc">${a.desc}</div>
+        <div class="ability-cost" style="margin-top:4px">Cost: ${a.cost}</div>
+      </div>`).join('');
+    card.innerHTML=`
+      <div class="char-header">
+        <div class="char-avatar" style="background:${c.avatarBg}">${c.icon}</div>
+        <div class="char-meta">
+          <div class="char-name">${c.name}</div>
+          <div class="char-role" style="color:${c.roleColor}">${c.role}</div>
+          <div class="stat-row">${statsHtml}</div>
+        </div>
+      </div>
+      <div class="char-body"><div class="ability-list">${abilitiesHtml}</div></div>`;
+    grid.appendChild(card);
+  });
+}
+
+function renderMono(){
+  // Price cards
+  const pg=document.getElementById('price-grid');
+  packs.forEach(p=>{
+    const card=document.createElement('div');
+    card.className='price-card'+(p.featured?' featured':'');
+    card.innerHTML=`
+      <div class="price-name">${p.name}</div>
+      <div class="price-amount">${p.price}</div>
+      <div class="price-period">${p.period}</div>
+      <div class="price-shards">💎 ${p.shards} shards</div>
+      ${p.bonus?`<div class="price-bonus">${p.bonus}</div>`:''}`;
+    pg.appendChild(card);
+  });
+  // Earn table
+  const tb=document.getElementById('earn-tbody');
+  earnRows.forEach(r=>{
+    const tr=document.createElement('tr');
+    const typeLabel={earn:'EARN',spend:'SPEND',buy:'BUY'}[r.type];
+    const typeCls={earn:'cat-earn',spend:'cat-spend',buy:'cat-buy'}[r.type];
+    const amtCls=r.type==='earn'||r.type==='buy'?'earn-pos':'earn-neg';
+    tr.innerHTML=`<td>${r.action}</td><td><span class="earn-cat ${typeCls}">${typeLabel}</span></td><td class="${amtCls}">${r.shards}</td><td style="color:var(--ghost);font-size:11px">${r.notes}</td>`;
+    tb.appendChild(tr);
+  });
+  // Retention bars
+  const rb=document.getElementById('retention-bars');
+  retentionData.forEach(r=>{
+    const row=document.createElement('div');
+    row.className='ret-row';
+    row.innerHTML=`
+      <div class="ret-label">${r.label}</div>
+      <div class="ret-bar-wrap"><div class="ret-bar" style="width:0%;background:${r.color}" data-pct="${r.pct}">${r.pct}%</div></div>
+      <div class="ret-val">${r.pct}%</div>`;
+    rb.appendChild(row);
+  });
+  setTimeout(()=>{document.querySelectorAll('.ret-bar').forEach(b=>b.style.width=b.dataset.pct+'%');},200);
+}
+
+function renderRoadmap(){
+  const rm=document.getElementById('roadmap');
+  roadmap.forEach((r,i)=>{
+    const item=document.createElement('div');
+    item.className='rm-item';
+    item.innerHTML=`
+      <div class="rm-line">
+        <div class="rm-dot" style="background:${r.color}"></div>
+        ${i<roadmap.length-1?`<div class="rm-connector" style="background:linear-gradient(${r.color},${roadmap[i+1].color})"></div>`:''}
+      </div>
+      <div class="rm-content">
+        <div class="rm-phase">${r.phase}</div>
+        <div class="rm-title">${r.title}</div>
+        <div class="rm-items">${r.items}</div>
+      </div>`;
+    rm.appendChild(item);
+  });
+}
+
+function renderModes(){
+  const g=document.getElementById('modes-grid');
+  gameModes.forEach(m=>{
+    const card=document.createElement('div');
+    card.className='flow-card';
+    card.innerHTML=`<div class="flow-card-icon">${m.icon}</div><div class="flow-card-title">${m.title}</div><div style="font-size:12px;color:var(--ghost);line-height:1.6">${m.desc}</div>`;
+    g.appendChild(card);
+  });
+}
+
+function renderStack(){
+  const diag=document.getElementById('stack-diagram');
+  stackLayers.forEach(layer=>{
+    const row=document.createElement('div');
+    row.className='stack-layer';
+    row.innerHTML=`<div class="layer-label">${layer.label}</div><div class="layer-blocks">${layer.blocks.map(b=>`<div class="layer-block ${b.cls}"><div class="lb-icon">${b.icon}</div><div class="lb-name">${b.name}</div><div class="lb-tech">${b.tech}</div></div>`).join('')}</div>`;
+    diag.appendChild(row);
+    if(layer.arrow){const arr=document.createElement('div');arr.className='stack-arrow';arr.innerHTML=`<div class="arrow-line"></div><div class="arrow-label">↕ ${layer.arrow}</div>`;diag.appendChild(arr);}
+  });
+}
+
+function renderFlows(){
+  const g=document.getElementById('flow-grid');
+  flows.forEach(f=>{
+    const card=document.createElement('div');card.className='flow-card';
+    card.innerHTML=`<div class="flow-card-icon">${f.icon}</div><div class="flow-card-title">${f.title}</div><ol class="flow-steps">${f.steps.map(s=>`<li>${s}</li>`).join('')}</ol>`;
+    g.appendChild(card);
+  });
+}
+
+function renderNetcode(){
+  const g=document.getElementById('netcode-grid');
+  netcodeCards.forEach(f=>{
+    const card=document.createElement('div');card.className='flow-card';
+    card.innerHTML=`<div class="flow-card-icon">${f.icon}</div><div class="flow-card-title">${f.title}</div><ol class="flow-steps">${f.steps.map(s=>`<li>${s}</li>`).join('')}</ol>`;
+    g.appendChild(card);
+  });
+}
+
+function renderSpecs(){
+  const tb=document.getElementById('spec-tbody');
+  specs.forEach(s=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${s.comp}</td><td><strong style="color:var(--bright);font-size:12px">${s.choice}</strong></td><td>${s.why}</td>`;
+    tb.appendChild(tr);
+  });
+}
+
+function renderDeploy(){
+  const container=document.getElementById('deploy-steps');
+  deploySteps.forEach((s,i)=>{
+    const div=document.createElement('div');
+    div.className='deploy-step';div.id='dstep-'+i;
+    div.innerHTML=`
+      <div class="deploy-step-header" onclick="toggleDeploy(${i})">
+        <div class="step-num" style="background:${s.color}20;color:${s.color}">${s.num}</div>
+        <div class="step-info"><div class="step-title">${s.title}</div><div class="step-sub">${s.sub}</div></div>
+        <div class="step-time">⏱ ${s.time}</div>
+        <div class="step-chevron">▼</div>
+      </div>
+      <div class="deploy-step-body">
+        <ol class="instruction-list">${s.instructions.map(inst=>`<li><div class="inst-num">${s.num}.${s.instructions.indexOf(inst)+1}</div><div class="inst-text">${inst.text}</div></li>`).join('')}</ol>
+        ${s.tip?`<div class="tip-box"><strong>💡 Tip:</strong> ${s.tip}</div>`:''}
+        ${s.warn?`<div class="warn-box"><strong>⚠️ Warning:</strong> ${s.warn}</div>`:''}
+      </div>`;
+    container.appendChild(div);
+  });
+  const ct=document.getElementById('cost-tbody');
+  costRows.forEach(r=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td><strong style="color:var(--bright)">${r.item}</strong></td><td style="color:var(--ghost)">${r.what}</td><td>${r.free?`<span class="free-tag">FREE</span>`:`<span style="color:var(--text)">${r.cost}</span>`}</td>`;
+    ct.appendChild(tr);
+  });
+}
+
+function toggleDeploy(i){
+  const el=document.getElementById('dstep-'+i);
+  el.classList.toggle('open');
+}
+
+function switchTab(tab,btn){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  btn.classList.add('active');
+}
+
+// INIT
+renderGalaxies();
+renderCharacters();
+renderMono();
+renderRoadmap();
+renderModes();
+renderStack();
+renderFlows();
+renderNetcode();
+renderSpecs();
+renderDeploy();
+
+// Auto-open first deploy step
+setTimeout(()=>document.getElementById('dstep-0')&&document.getElementById('dstep-0').classList.add('open'),100);
+</script>
+</body>
+</html>
